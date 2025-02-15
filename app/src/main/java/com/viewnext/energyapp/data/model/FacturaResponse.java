@@ -6,6 +6,7 @@ public class FacturaResponse { // Modelar los datos de la respuesta de la API
     private int numFacturas;
     private List<Factura> facturas;
 
+    // Getters y Setters
     public int getNumFacturas() {
         return numFacturas;
     }

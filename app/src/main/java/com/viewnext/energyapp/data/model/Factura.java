@@ -1,9 +1,9 @@
 package com.viewnext.energyapp.data.model;
 
 public class Factura {
-    private String descEstado;  // Descripción del estado de la factura
-    private double importeOrdenacion;  // Monto de la factura
-    private String fecha;  // Fecha de la factura
+    private String descEstado;
+    private double importeOrdenacion;
+    private String fecha;
 
     // Constructor
     public Factura(String descEstado, double importeOrdenacion, String fecha) {

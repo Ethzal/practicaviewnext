@@ -3,13 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    style="?android:attr/buttonBarStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.viewnext.energyapp.presentation.ui.home.MainActivity">
+
     <Button
         android:id="@+id/btFacturas"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Facturas"/>
+        android:text="@string/facturas" />
 
+    <Button
+        android:id="@+id/btToggleApi"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cambiar_a_retromock"/>
 </LinearLayout>
