@@ -35,6 +35,9 @@ public class FiltroFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFiltroBinding.inflate(inflater, container, false);
 
+        // Pasar el ViewModel de Factura
+        viewModel = new ViewModelProvider(requireActivity()).get(FacturaViewModel.class);
+
         // Valores por defecto de las fechas
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
@@ -195,7 +198,6 @@ public class FiltroFragment extends Fragment {
             binding.btnSelectDate.setText(fechaDefault);
             binding.btnSelectDateUntil.setText(fechaDefault);
 
-            viewModel = new ViewModelProvider(requireActivity()).get(FacturaViewModel.class);
             binding.rangeSlider.setValues(0f,viewModel.getMaxImporte());
 
             binding.checkPagadas.setChecked(false);

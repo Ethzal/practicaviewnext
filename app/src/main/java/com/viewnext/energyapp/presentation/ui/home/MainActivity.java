@@ -16,7 +16,7 @@ import com.viewnext.energyapp.presentation.ui.factura.FacturaActivity;
 public class MainActivity extends AppCompatActivity { // Actividad principal, así empieza la app
 
     private ActivityMainBinding binding;
-    private boolean usingRetromock = false;
+    private boolean usingRetromock = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -116,13 +116,17 @@ public class FacturaActivity extends AppCompatActivity {
             binding.fragmentContainer.setVisibility(View.VISIBLE);
 
             // Mostrar el fragmento en toda la pantalla
-            FiltroFragment filtroFragment = new FiltroFragment();
-            filtroFragment.setArguments(bundle);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.fragment_container, filtroFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            if (getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT") == null) {
+                FiltroFragment filtroFragment = new FiltroFragment();
+                filtroFragment.setArguments(bundle);
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT"); // Agregar un TAG
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+
 
             return true;
         }
