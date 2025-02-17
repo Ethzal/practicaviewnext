@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:elevation="-1dp"
     tools:context="com.viewnext.energyapp.presentation.ui.factura.FacturaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_marginEnd="8dp">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:drawableStart="@drawable/baseline_arrow_back_ios_24"
-                android:drawableTint="@android:color/holo_green_light"
                 android:text="@string/back_button"
-                android:textAllCaps="false"
                 android:textColor="@android:color/holo_green_light"
-                android:textSize="20sp"/>
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                app:icon="@drawable/baseline_arrow_back_ios_24"
+                app:iconTint="@color/holo_green_light"
+                app:iconGravity="textStart"
+                android:insetLeft="-16dp"
+                app:iconPadding="0dp"/>
 
             <TextView
                 android:id="@+id/toolbarTitle"
@@ -46,5 +52,16 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp" />
-</LinearLayout>
+        android:padding="16dp"
+        android:layout_below="@id/toolbar"/>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="4dp"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"/>
+</RelativeLayout>

@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,18 +24,18 @@
                 android:id="@+id/fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha"
+                android:text="@string/fecha"
                 android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/descEstado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Estado"
+                android:text="@string/estado"
                 android:textSize="16sp"
                 android:textColor="@color/black"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -42,11 +43,23 @@
             android:id="@+id/importe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Importe"
+            android:text="@string/importe"
             android:textSize="20sp"
             android:gravity="end"
-            android:layout_marginLeft="16dp"
-            android:textColor="@color/black"/>
+            android:layout_marginStart="16dp"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/icon_factura"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/icono_de_flecha_para_item_factura"
+            android:gravity="end"
+            android:src="@drawable/baseline_arrow_back_ios_24"
+            android:scaleX="-1"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            app:tint="@android:color/darker_gray" />
 
     </LinearLayout>
 
