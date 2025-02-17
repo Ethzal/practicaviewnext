@@ -49,10 +49,10 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
         holder.binding.descEstado.setVisibility(View.VISIBLE);
         holder.binding.descEstado.setText(factura.getDescEstado());
 
-        // Aquí deberías comprobar el estado y aplicar los estilos o colores de acuerdo con el estado específico
+        // Estilos de los estados
         switch (factura.getDescEstado()) {
             case "Pagada":
-                holder.binding.descEstado.setVisibility(View.GONE); // Si es "Pagada", no mostrar el estado
+                holder.binding.descEstado.setVisibility(View.GONE);
                 break;
 
             case "Pendiente de pago":
@@ -65,17 +65,6 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
                 holder.binding.descEstado.setTypeface(null, Typeface.ITALIC);
                 break;
 
-            case "Plan de pago":
-                holder.binding.descEstado.setTextColor(Color.BLACK);
-                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
-                break;
-
-            case "Cuota Fija":
-                holder.binding.descEstado.setTextColor(Color.BLACK);
-                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
-                break;
-
-            // Agregar más estados si es necesario
             default:
                 holder.binding.descEstado.setTextColor(Color.BLACK);
                 holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
@@ -93,7 +82,6 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
         holder.itemView.setOnClickListener(this::showPopup);
     }
 
-
     // PopUp nativo
     private void showPopup(View view) {
         new androidx.appcompat.app.AlertDialog.Builder(view.getContext())
@@ -105,10 +93,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
 
     private String formatFecha(String fecha) {
         try {
-            // Formato de la fecha original
             SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
-            // Nuevo formato
             SimpleDateFormat newFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
             // Parseamos la fecha original y la convertimos al nuevo formato

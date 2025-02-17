@@ -1,6 +1,7 @@
 package com.viewnext.energyapp.data.model;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,11 +44,11 @@ public class Factura {
         this.fecha = fecha;
     }
     public static Date stringToDate(String fechaString) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");  // Ajusta el formato de acuerdo a tu fecha
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  // Ajusta el formato de acuerdo a tu fecha
         try {
             return sdf.parse(fechaString);  // Convierte el String a Date
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("FechaParseError", "Error al convertir la fecha: " + fechaString, e);
             return null;
         }
     }

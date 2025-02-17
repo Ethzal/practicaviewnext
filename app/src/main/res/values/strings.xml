@@ -7,8 +7,6 @@
     <string name="estado">Estado</string>
     <string name="importe">Importe</string>
     <string name="icono_de_flecha_para_item_factura">Icono de flecha para item factura</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="filtros">Filtros</string>
     <string name="aplicar_filtros">Aplicar Filtros</string>
     <string name="cerrar">Cerrar</string>

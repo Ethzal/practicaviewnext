@@ -3,11 +3,9 @@ package com.viewnext.energyapp.presentation.ui.factura;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,18 +16,14 @@ import com.example.practicaviewnext.databinding.FragmentFiltroBinding;
 import com.google.android.material.slider.RangeSlider;
 import com.viewnext.energyapp.presentation.viewmodel.FacturaViewModel;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class FiltroFragment extends Fragment {
     private FragmentFiltroBinding binding;
-    private RangeSlider rangeSlider;
-    private TextView tvMinValue, tvMaxValue;
     private FacturaViewModel viewModel;
 
     public FiltroFragment() { // Constructor vacío
@@ -41,6 +35,13 @@ public class FiltroFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFiltroBinding.inflate(inflater, container, false);
 
+        // Valores por defecto de las fechas
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
+        binding.btnSelectDate.setText(fechaDefault);
+        binding.btnSelectDateUntil.setText(fechaDefault);
+
+        // Botón fecha desde
         binding.btnSelectDate.setOnClickListener(v -> {
             // Crear un calendario para obtener la fecha actual
             final Calendar calendar = Calendar.getInstance();
@@ -73,6 +74,7 @@ public class FiltroFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        // Botón fecha hasta
         binding.btnSelectDateUntil.setOnClickListener(v -> {
             // Crear un calendario para obtener la fecha actual
             final Calendar calendar = Calendar.getInstance();
@@ -87,10 +89,17 @@ public class FiltroFragment extends Fragment {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            // Mostrar la fecha seleccionada en el TextView usando ViewBinding
-                            String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                            binding.btnSelectDateUntil.setText(selectedDate);
+                            // Formatear la fecha
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.set(year, monthOfYear, dayOfMonth);
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                            String formattedDate = sdf.format(calendar.getTime());
+
+                            // Mostrar la fecha
+                            binding.btnSelectDateUntil.setText(formattedDate);
                         }
+
                     },
                     year, month, dayOfMonth); // Pasamos la fecha actual como valor inicial
 
@@ -101,22 +110,17 @@ public class FiltroFragment extends Fragment {
         // Recuperar el Bundle con maxImporte
         Bundle bundle = getArguments();
         if (bundle != null) {
-            float maxImporte = bundle.getFloat("MAX_IMPORTE", 0f); // Valor por defecto si no se pasa maxImporte
-            Log.e("FiltroFragment", "maxImporte: " + maxImporte);
+            float maxImporte = bundle.getFloat("MAX_IMPORTE", 0f);
 
-            // Asegurarse de que maxImporte no sea cero o incorrecto
             if (maxImporte > 0) {
-                // Establecer los valores en el RangeSlider
-                binding.rangeSlider.setValueFrom(0f);  // Valor mínimo
-                binding.rangeSlider.setValueTo(maxImporte);  // Valor máximo
-                binding.rangeSlider.setValues(0f, maxImporte);  // Inicializa el rango
+                binding.rangeSlider.setValueFrom(0f);
+                binding.rangeSlider.setValueTo(maxImporte);
+                binding.rangeSlider.setValues(0f, maxImporte);
 
-                // Establecer los valores iniciales en los TextViews
                 binding.tvMinValue.setText("0 €");
                 binding.tvMaxValue.setText(maxImporte + " €");
                 binding.tvMaxImporte.setText(maxImporte + " €");
             } else {
-                // Manejar el caso en que maxImporte es 0 o inválido
                 binding.tvMinValue.setText("0 €");
                 binding.tvMaxValue.setText("0 €");
             }
@@ -146,15 +150,11 @@ public class FiltroFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Botón para cerrar el fragmento
+        // Botón aplicar filtros
         binding.btnAplicar.setOnClickListener(v -> {
             List<String> estados = getStrings();
-            String fechaInicioString = binding.btnSelectDate.getText().toString();
-            String fechaFinString = binding.btnSelectDateUntil.getText().toString();
-
-            Date fechaInicio = parseFecha(fechaInicioString);
-            Date fechaFin = parseFecha(fechaFinString);
-
+            String fechaInicio = binding.btnSelectDate.getText().toString();
+            String fechaFin = binding.btnSelectDateUntil.getText().toString();
 
             List<Float> valoresSlider = binding.rangeSlider.getValues();
             float importeMin = valoresSlider.get(0);
@@ -163,8 +163,8 @@ public class FiltroFragment extends Fragment {
             // Crear un Bundle para pasar los datos
             Bundle bundle = new Bundle();
             bundle.putStringArrayList("ESTADOS", new ArrayList<>(estados));
-            bundle.putSerializable("FECHA_INICIO", fechaInicio);
-            bundle.putSerializable("FECHA_FIN", fechaFin);
+            bundle.putString("FECHA_INICIO", fechaInicio);
+            bundle.putString("FECHA_FIN", fechaFin);
             bundle.putDouble("IMPORTE_MIN", importeMin);
             bundle.putDouble("IMPORTE_MAX", importeMax);
 
@@ -178,6 +178,8 @@ public class FiltroFragment extends Fragment {
             // Cerrar el fragmento
             getParentFragmentManager().popBackStack();
         });
+
+        // Botón cerrar fragmento filtros
         binding.btnCerrar.setOnClickListener(v -> {
             if (getActivity() != null) {
                 FacturaActivity activity = (FacturaActivity) getActivity();
@@ -185,9 +187,13 @@ public class FiltroFragment extends Fragment {
             }
             getParentFragmentManager().popBackStack();
         });
+
+        // Botón borrar filtros
         binding.btnBorrar.setOnClickListener(v -> {
-            binding.btnSelectDate.setText("día/mes/año");
-            binding.btnSelectDateUntil.setText("día/mes/año");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
+            binding.btnSelectDate.setText(fechaDefault);
+            binding.btnSelectDateUntil.setText(fechaDefault);
 
             viewModel = new ViewModelProvider(requireActivity()).get(FacturaViewModel.class);
             binding.rangeSlider.setValues(0f,viewModel.getMaxImporte());
@@ -201,7 +207,7 @@ public class FiltroFragment extends Fragment {
     }
 
     @NonNull
-    private List<String> getStrings() {
+    private List<String> getStrings() { // Estados
         List<String> estados = new ArrayList<>();
 
         if (binding.checkPagadas.isChecked()) {
@@ -220,18 +226,6 @@ public class FiltroFragment extends Fragment {
             estados.add("Anulada");
         }
         return estados;
-    }
-
-    private Date parseFecha(String fechaString) {
-        String fechaSoloFecha = fechaString.split(" ")[0];
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        try {
-            return sdf.parse(fechaSoloFecha);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
