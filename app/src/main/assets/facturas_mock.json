@@ -12,7 +12,7 @@
       "fecha": "05/02/2025"
     },
     {
-      "descEstado": "Pagada",
+      "descEstado": "Anulada",
       "importeOrdenacion": 19.690000000000001,
       "fecha": "08/01/2025"
     },
@@ -27,7 +27,7 @@
       "fecha": "16/11/2024"
     },
     {
-      "descEstado": "Pagada",
+      "descEstado": "Cuota Fija",
       "importeOrdenacion": 18.27,
       "fecha": "05/10/2018"
     },
@@ -37,7 +37,7 @@
       "fecha": "05/09/2018"
     },
     {
-      "descEstado": "Pagada",
+      "descEstado": "Plan de pago",
       "importeOrdenacion": 37.18,
       "fecha": "07/08/2018"
     }

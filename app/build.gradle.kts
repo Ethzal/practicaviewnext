@@ -75,4 +75,8 @@ dependencies {
 
     // Annotation processor
     annotationProcessor(libs.lifecycle.compiler)
+
+    // Materials
+    implementation(libs.material)
+
 }

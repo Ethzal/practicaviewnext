@@ -1,7 +1,8 @@
 package com.viewnext.energyapp.presentation.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.util.Log;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaViewHolder> { // Adapter para mostrar las facturas con un RecyclerView
-    private final List<Factura> facturas;
+    private List<Factura> facturas;
 
     // Constructor
     public FacturaAdapter(List<Factura> facturas){
         this.facturas = facturas;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFacturas(List<Factura> facturas) {
+        this.facturas = facturas;
+        notifyDataSetChanged();
     }
 
     // Crear ViewHolder para mostrar un ítem
@@ -39,13 +46,40 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
     public void onBindViewHolder(@NonNull FacturaAdapter.FacturaViewHolder holder, int position) {
         Factura factura = facturas.get(position);
 
-        // Si la factura está pagada, no mostrar el estado y hacerlo invisible
-        if (Objects.equals(factura.getDescEstado(), "Pagada")) {
-            holder.binding.descEstado.setVisibility(View.GONE);
-        } else {
-            holder.binding.descEstado.setVisibility(View.VISIBLE);
-            holder.binding.descEstado.setText(factura.getDescEstado());
-            holder.binding.descEstado.setTextColor(Color.RED);
+        holder.binding.descEstado.setVisibility(View.VISIBLE);
+        holder.binding.descEstado.setText(factura.getDescEstado());
+
+        // Aquí deberías comprobar el estado y aplicar los estilos o colores de acuerdo con el estado específico
+        switch (factura.getDescEstado()) {
+            case "Pagada":
+                holder.binding.descEstado.setVisibility(View.GONE); // Si es "Pagada", no mostrar el estado
+                break;
+
+            case "Pendiente de pago":
+                holder.binding.descEstado.setTextColor(Color.RED);
+                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
+                break;
+
+            case "Anulada":
+                holder.binding.descEstado.setTextColor(Color.GRAY);
+                holder.binding.descEstado.setTypeface(null, Typeface.ITALIC);
+                break;
+
+            case "Plan de pago":
+                holder.binding.descEstado.setTextColor(Color.BLACK);
+                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
+                break;
+
+            case "Cuota Fija":
+                holder.binding.descEstado.setTextColor(Color.BLACK);
+                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
+                break;
+
+            // Agregar más estados si es necesario
+            default:
+                holder.binding.descEstado.setTextColor(Color.BLACK);
+                holder.binding.descEstado.setTypeface(null, Typeface.NORMAL);
+                break;
         }
 
         // Mostrar el importe a la derecha
@@ -54,9 +88,20 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
         // Formatear la fecha
         String fechaFormateada = formatFecha(factura.getFecha());
         holder.binding.fecha.setText(fechaFormateada);
+
+        // PopUp nativo para la información por implementar
+        holder.itemView.setOnClickListener(this::showPopup);
     }
 
 
+    // PopUp nativo
+    private void showPopup(View view) {
+        new androidx.appcompat.app.AlertDialog.Builder(view.getContext())
+                .setTitle("Información")
+                .setMessage("Esta funcionalidad aún no está disponible")
+                .setPositiveButton("Cerrar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 
     private String formatFecha(String fecha) {
         try {
@@ -69,7 +114,6 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
             // Parseamos la fecha original y la convertimos al nuevo formato
             return newFormat.format(Objects.requireNonNull(originalFormat.parse(fecha)));
         } catch (Exception e) {
-            Log.e("FacturaAdapter", "Error formatting date", e);
             return fecha; // Si hay un error en el formato, regresamos la fecha original
         }
     }

@@ -1,5 +1,11 @@
 package com.viewnext.energyapp.data.model;
 
+import android.annotation.SuppressLint;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Factura {
     private String descEstado;
     private double importeOrdenacion;
@@ -35,6 +41,15 @@ public class Factura {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+    public static Date stringToDate(String fechaString) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");  // Ajusta el formato de acuerdo a tu fecha
+        try {
+            return sdf.parse(fechaString);  // Convierte el String a Date
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 

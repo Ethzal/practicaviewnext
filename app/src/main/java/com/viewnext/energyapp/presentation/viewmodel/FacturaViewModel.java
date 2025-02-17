@@ -68,4 +68,18 @@ public class FacturaViewModel extends AndroidViewModel { // Se encarga de gestio
             }
         });
     }
+    public float getMaxImporte() {
+        if (facturasLiveData.getValue() == null || facturasLiveData.getValue().isEmpty()) {
+            return 0f;
+        }
+
+        float maxImporte = 0f;
+        for (Factura factura : facturasLiveData.getValue()) {
+            if (factura.getImporteOrdenacion() > maxImporte) {
+                maxImporte = (float) factura.getImporteOrdenacion();
+            }
+        }
+        return maxImporte;
+    }
+
 }
