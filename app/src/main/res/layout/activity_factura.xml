@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:elevation="-1dp"
+    android:background="@color/white"
     tools:context="com.viewnext.energyapp.presentation.ui.factura.FacturaActivity">
 
     <androidx.appcompat.widget.Toolbar

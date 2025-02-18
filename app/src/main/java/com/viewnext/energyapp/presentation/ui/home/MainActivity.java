@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.practicaviewnext.databinding.ActivityMainBinding;
 import com.viewnext.energyapp.presentation.ui.factura.FacturaActivity;
+import com.viewnext.energyapp.presentation.ui.smartsolar.SmartSolarActivity;
 
 public class MainActivity extends AppCompatActivity { // Actividad principal, así empieza la app
 
@@ -45,6 +46,11 @@ public class MainActivity extends AppCompatActivity { // Actividad principal, as
         binding.btFacturas.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FacturaActivity.class);
             intent.putExtra("USING_RETROMOCK", usingRetromock);
+            startActivity(intent);
+        });
+        // Botón para abrir SmartSolarActivity
+        binding.btSmart.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SmartSolarActivity.class);
             startActivity(intent);
         });
     }
