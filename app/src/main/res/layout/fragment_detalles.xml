@@ -56,11 +56,11 @@
                     android:textColor="@color/black"/>
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btPopUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
                     android:gravity="end"
                     app:iconGravity="end"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="45dp"
                     android:padding="0dp"
                     android:backgroundTint="@android:color/transparent"
                     android:background="@android:color/transparent"
