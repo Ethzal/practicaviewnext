@@ -42,4 +42,11 @@
     <string name="gr_fico_1">Gráfico 1</string>
     <string name="autoconsumo">Autoconsumo:</string>
     <string name="_92">92%</string>
+    <string name="estamos_trabajando">Estamos trabajando en mejorar la App. Tus paneles solares siguen produciendo, en breve podrás seguir viendo tu producción solar. Sentimos las molestias.</string>
+    <string name="plan_de_gestiones">Plan de gestiones</string>
+    <string name="cau_c_digo_autoconsumo">CAU (Código Autoconsumo)</string>
+    <string name="estado_solicitud_alta_autoconsumidor">Estado solicitud alta autoconsumidor</string>
+    <string name="tipo_autoconsumo">Tipo autoconsumo</string>
+    <string name="compensaci_n_de_excedentes">Compensación de excedentes</string>
+    <string name="potencia_de_instalaci_n">Potencia de instalación</string>
 </resources>

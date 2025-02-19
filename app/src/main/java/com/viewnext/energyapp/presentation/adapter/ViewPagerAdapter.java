@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.viewnext.energyapp.presentation.ui.smartsolar.DetallesFragment;
+import com.viewnext.energyapp.presentation.ui.smartsolar.EnergiaFragment;
 import com.viewnext.energyapp.presentation.ui.smartsolar.MiInstalacionFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
@@ -19,10 +21,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         switch (position) {
             case 0:
                 return new MiInstalacionFragment();
-            /*case 1:
+            case 1:
                 return new EnergiaFragment();
             case 2:
-                return new DetallesFragment();*/
+                return new DetallesFragment();
             default:
                 return new MiInstalacionFragment();
         }

@@ -5,11 +5,11 @@
     tools:context="com.viewnext.energyapp.presentation.ui.smartsolar.MiInstalacionFragment"
     android:background="@color/white"
     android:padding="16dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -1,5 +1,6 @@
 package com.viewnext.energyapp.data.api;
 
+import com.viewnext.energyapp.data.model.DetallesResponse;
 import com.viewnext.energyapp.data.model.FacturaResponse;
 
 import co.infinum.retromock.meta.Mock;
@@ -14,4 +15,8 @@ public interface ApiService { // Retrofit genera el código para implementar est
     @MockResponse(body="facturas_mock.json") // Facturas mock dentro de assets
     @GET("/") // Endpoint
     Call<FacturaResponse> getFacturasMock();
+    @Mock // En el caso de usar retromock
+    @MockResponse(body="detalles_mock.json") // Detalles mock dentro de assets
+    @GET("/") // Endpoint
+    Call<DetallesResponse> getDetallesMock();
 }
