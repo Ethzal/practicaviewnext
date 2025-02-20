@@ -4,7 +4,7 @@ import com.viewnext.energyapp.data.model.Factura;
 
 import java.util.List;
 
-public interface getFacturasUseCaseCallback {
-    void onSuccess(List<Factura> facturas);
+public interface FilterFacturasUseCaseCallback {
+    void onSuccess(List<Factura> facturasFiltradas);
     void onError(String error);
 }

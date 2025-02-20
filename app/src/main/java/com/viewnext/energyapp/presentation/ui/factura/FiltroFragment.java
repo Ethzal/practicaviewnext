@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.practicaviewnext.databinding.FragmentFiltroBinding;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 import com.viewnext.energyapp.presentation.viewmodel.FacturaViewModel;
 
@@ -38,6 +41,9 @@ public class FiltroFragment extends Fragment {
         // Pasar el ViewModel de Factura
         viewModel = new ViewModelProvider(requireActivity()).get(FacturaViewModel.class);
 
+        // Restaurar filtros si están disponibles
+        restoreFiltersViewModel();
+
         // Valores por defecto de las fechas
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
@@ -45,70 +51,8 @@ public class FiltroFragment extends Fragment {
         binding.btnSelectDateUntil.setText(fechaDefault);
 
         // Botón fecha desde
-        binding.btnSelectDate.setOnClickListener(v -> {
-            // Crear un calendario para obtener la fecha actual
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-            // Crear el DatePickerDialog
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    requireActivity(),
-                    new DatePickerDialog.OnDateSetListener() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            // Formatear la fecha en el formato adecuado
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.set(year, monthOfYear, dayOfMonth);
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                            String formattedDate = sdf.format(calendar.getTime());  // Formato correcto
-
-                            // Mostrar la fecha seleccionada en el TextView usando ViewBinding
-                            binding.btnSelectDate.setText(formattedDate);
-                        }
-
-                    },
-                    year, month, dayOfMonth); // Pasamos la fecha actual como valor inicial
-
-            // Mostrar el DatePickerDialog
-            datePickerDialog.show();
-        });
-
-        // Botón fecha hasta
-        binding.btnSelectDateUntil.setOnClickListener(v -> {
-            // Crear un calendario para obtener la fecha actual
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-            // Crear el DatePickerDialog
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    requireActivity(),
-                    new DatePickerDialog.OnDateSetListener() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            // Formatear la fecha
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.set(year, monthOfYear, dayOfMonth);
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                            String formattedDate = sdf.format(calendar.getTime());
-
-                            // Mostrar la fecha
-                            binding.btnSelectDateUntil.setText(formattedDate);
-                        }
-
-                    },
-                    year, month, dayOfMonth); // Pasamos la fecha actual como valor inicial
-
-            // Mostrar el DatePickerDialog
-            datePickerDialog.show();
-        });
+        binding.btnSelectDate.setOnClickListener(v -> showDatePicker(binding.btnSelectDate));
+        binding.btnSelectDateUntil.setOnClickListener(v -> showDatePicker(binding.btnSelectDateUntil));
 
         // Recuperar el Bundle con maxImporte
         Bundle bundle = getArguments();
@@ -128,7 +72,7 @@ public class FiltroFragment extends Fragment {
                 binding.tvMaxValue.setText("0 €");
             }
         }
-
+        binding.rangeSlider.setLabelBehavior(LabelFormatter.LABEL_GONE);
         // Listener para el RangeSlider
         binding.rangeSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @SuppressLint("DefaultLocale")
@@ -145,45 +89,137 @@ public class FiltroFragment extends Fragment {
                 }
             }
         });
+
         return binding.getRoot();
+    }
+
+    private void showDatePicker(MaterialButton button) {
+        // Obtener la fecha actual
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Crear y mostrar el DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireActivity(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    // Formatear la fecha seleccionada
+                    Calendar selectedCalendar = Calendar.getInstance();
+                    selectedCalendar.set(selectedYear, selectedMonth, selectedDay);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    String formattedDate = sdf.format(selectedCalendar.getTime());
+
+                    // Establecer la fecha en el botón correspondiente
+                    button.setText(formattedDate);
+                },
+                year, month, dayOfMonth);
+
+        datePickerDialog.show();
+    }
+
+    private void restoreFiltersViewModel() {
+        // Restaurar fecha de inicio
+        viewModel.getFechaInicio().observe(getViewLifecycleOwner(), fecha -> {
+            if (fecha != null) {
+                binding.btnSelectDate.setText(fecha);
+            }
+        });
+
+        // Restaurar fecha de fin
+        viewModel.getFechaFin().observe(getViewLifecycleOwner(), fecha -> {
+            if (fecha != null) {
+                binding.btnSelectDateUntil.setText(fecha);
+            }
+        });
+
+        // Restaurar valores del slider
+        viewModel.getValoresSlider().observe(getViewLifecycleOwner(), valores -> {
+            if (valores != null && valores.size() == 2) {
+                binding.rangeSlider.setValues(valores.get(0), valores.get(1));
+                binding.tvMinValue.setText(String.format(Locale.getDefault(), "%.0f €", valores.get(0)));
+                binding.tvMaxValue.setText(String.format(Locale.getDefault(), "%.0f €", valores.get(1)));
+            }
+        });
+
+        // Restaurar estados seleccionados
+        viewModel.getEstados().observe(getViewLifecycleOwner(), estados -> {
+            if (estados != null) {
+                binding.checkPagadas.setChecked(estados.contains("Pagada"));
+                binding.checkPendientesPago.setChecked(estados.contains("Pendiente de pago"));
+                binding.checkCuotaFija.setChecked(estados.contains("Cuota Fija"));
+                binding.checkPlanPago.setChecked(estados.contains("Plan de pago"));
+                binding.checkAnuladas.setChecked(estados.contains("Anulada"));
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         // Botón aplicar filtros
         binding.btnAplicar.setOnClickListener(v -> {
             List<String> estados = getStrings();
             String fechaInicio = binding.btnSelectDate.getText().toString();
             String fechaFin = binding.btnSelectDateUntil.getText().toString();
 
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
+
             List<Float> valoresSlider = binding.rangeSlider.getValues();
             float importeMin = valoresSlider.get(0);
             float importeMax = valoresSlider.get(1);
 
-            // Crear un Bundle para pasar los datos
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList("ESTADOS", new ArrayList<>(estados));
-            bundle.putString("FECHA_INICIO", fechaInicio);
-            bundle.putString("FECHA_FIN", fechaFin);
-            bundle.putDouble("IMPORTE_MIN", importeMin);
-            bundle.putDouble("IMPORTE_MAX", importeMax);
+            // Guardar los filtros en el ViewModel
+            viewModel.getEstados().setValue(estados);
+            viewModel.getFechaInicio().setValue(fechaInicio);
+            viewModel.getFechaFin().setValue(fechaFin);
+            viewModel.getValoresSlider().setValue(valoresSlider);
 
-            // Pasar los datos a la actividad
+            // Validar que al menos un filtro esté activo
+            boolean filtrosValidos = !estados.isEmpty() || !fechaInicio.equals(fechaDefault) || !fechaFin.equals(fechaDefault) ||
+                    (importeMin != 0f && importeMax != viewModel.getMaxImporte());
+
             FacturaActivity activity = (FacturaActivity) getActivity();
-            if (activity != null) {
-                activity.aplicarFiltros(bundle);
-                activity.restoreMainView();
-            }
 
-            // Cerrar el fragmento
+            if (filtrosValidos) {
+                // Crear un Bundle con los filtros
+                Bundle bundle = new Bundle();
+                if (!estados.isEmpty()) {
+                    bundle.putStringArrayList("ESTADOS", (ArrayList<String>) estados);
+                }
+                bundle.putString("FECHA_INICIO", fechaInicio);
+                bundle.putString("FECHA_FIN", fechaFin);
+                bundle.putDouble("IMPORTE_MIN", importeMin);
+                bundle.putDouble("IMPORTE_MAX", importeMax);
+
+                // Pasar los datos a la actividad
+
+                if (activity != null) {
+                    activity.aplicarFiltros(bundle);
+                }
+            }else{
+                Toast.makeText(getActivity(), "No se aplicaron filtros", Toast.LENGTH_SHORT).show();
+            }
+            assert activity != null;
+            activity.restoreMainView();
             getParentFragmentManager().popBackStack();
         });
 
         // Botón cerrar fragmento filtros
         binding.btnCerrar.setOnClickListener(v -> {
+            List<String> estados = getStrings();
+            String fechaInicio = binding.btnSelectDate.getText().toString();
+            String fechaFin = binding.btnSelectDateUntil.getText().toString();
+            List<Float> valoresSlider = binding.rangeSlider.getValues();
+
+            // Guardar los filtros en el ViewModel
+            viewModel.getEstados().setValue(estados);
+            viewModel.getFechaInicio().setValue(fechaInicio);
+            viewModel.getFechaFin().setValue(fechaFin);
+            viewModel.getValoresSlider().setValue(valoresSlider);
             if (getActivity() != null) {
                 FacturaActivity activity = (FacturaActivity) getActivity();
                 activity.restoreMainView();
@@ -205,6 +241,32 @@ public class FiltroFragment extends Fragment {
             binding.checkCuotaFija.setChecked(false);
             binding.checkPendientesPago.setChecked(false);
             binding.checkPlanPago.setChecked(false);
+        });
+
+        // Recuperar los datos tras rotar
+        viewModel.getFechaInicio().observe(getViewLifecycleOwner(), fecha -> {
+            if (fecha != null) {
+                binding.btnSelectDate.setText(fecha);
+            }
+        });
+        viewModel.getFechaFin().observe(getViewLifecycleOwner(), fecha -> {
+            if (fecha != null) {
+                binding.btnSelectDateUntil.setText(fecha);
+            }
+        });
+        viewModel.getValoresSlider().observe(getViewLifecycleOwner(), valores -> {
+            if (valores != null && valores.size() == 2) {
+                binding.rangeSlider.setValues(valores.get(0), valores.get(1));
+            }
+        });
+        viewModel.getEstados().observe(getViewLifecycleOwner(), estados -> {
+            if (estados != null) {
+                binding.checkPagadas.setChecked(estados.contains("Pagada"));
+                binding.checkPendientesPago.setChecked(estados.contains("Pendiente de pago"));
+                binding.checkCuotaFija.setChecked(estados.contains("Cuota Fija"));
+                binding.checkPlanPago.setChecked(estados.contains("Plan de pago"));
+                binding.checkAnuladas.setChecked(estados.contains("Anulada"));
+            }
         });
     }
 

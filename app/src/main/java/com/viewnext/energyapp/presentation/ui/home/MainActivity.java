@@ -1,7 +1,9 @@
 package com.viewnext.energyapp.presentation.ui.home;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -17,11 +19,12 @@ import com.viewnext.energyapp.presentation.ui.smartsolar.SmartSolarActivity;
 public class MainActivity extends AppCompatActivity { // Actividad principal, así empieza la app
 
     private ActivityMainBinding binding;
-    private boolean usingRetromock = true;
+    private boolean usingRetromock = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this); // La interfaz se extiende por toda la pantalla
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -32,15 +35,22 @@ public class MainActivity extends AppCompatActivity { // Actividad principal, as
             return insets;
         });
 
-        // Botón para alternar entre Retrofit y Retromock
-        binding.btToggleApi.setOnClickListener(v -> {
-            usingRetromock = !usingRetromock;
-            if (usingRetromock) {
-                Toast.makeText(MainActivity.this, "Usando Retromock", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Usando Retrofit", Toast.LENGTH_SHORT).show();
-            }
-        });
+        boolean isDebuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        // Botón para alternar entre Retrofit y Retromock si estamos en modo debug
+        if(isDebuggable){
+            usingRetromock=true;
+            binding.btToggleApi.setVisibility(View.VISIBLE);
+            binding.btToggleApi.setOnClickListener(v -> {
+                usingRetromock = !usingRetromock;
+                if (usingRetromock) {
+                    Toast.makeText(MainActivity.this, "Usando Retromock", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Usando Retrofit", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            binding.btToggleApi.setVisibility(View.GONE);
+        }
 
         // Botón para abrir FacturaActivity y pasar usingRetromock
         binding.btFacturas.setOnClickListener(v -> {

@@ -32,9 +32,14 @@ public class SmartSolarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inflar la vista con ViewBinding
+        EdgeToEdge.enable(this);
         binding = ActivitySmartSolarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Botón atrás
         binding.backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());

@@ -11,7 +11,6 @@ import com.viewnext.energyapp.data.api.ApiService;
 import com.viewnext.energyapp.data.api.RetromockClient;
 import com.viewnext.energyapp.data.model.Detalles;
 import com.viewnext.energyapp.data.model.DetallesResponse;
-import com.viewnext.energyapp.data.model.FacturaResponse;
 
 import java.util.List;
 

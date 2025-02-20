@@ -44,7 +44,7 @@ public class Factura {
         this.fecha = fecha;
     }
     public static Date stringToDate(String fechaString) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  // Ajusta el formato de acuerdo a tu fecha
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         try {
             return sdf.parse(fechaString);  // Convierte el String a Date
         } catch (ParseException e) {

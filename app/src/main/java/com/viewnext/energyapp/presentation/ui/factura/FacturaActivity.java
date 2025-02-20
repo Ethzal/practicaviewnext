@@ -1,7 +1,5 @@
 package com.viewnext.energyapp.presentation.ui.factura;
 
-import static com.viewnext.energyapp.data.model.Factura.stringToDate;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,9 +26,7 @@ import com.viewnext.energyapp.presentation.viewmodel.FacturaViewModel;
 import com.viewnext.energyapp.presentation.adapter.FacturaAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class FacturaActivity extends AppCompatActivity {
     private FacturaAdapter adapter;
@@ -50,6 +46,12 @@ public class FacturaActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Hacer visible el fragmento tras rotar
+        FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT");
+        if (filtroFragment != null) {
+            binding.fragmentContainer.setVisibility(View.VISIBLE);
+        }
+
         // Creación ViewModel de Factura
         facturaViewModel = new ViewModelProvider(this).get(FacturaViewModel.class);
 
@@ -57,10 +59,7 @@ public class FacturaActivity extends AppCompatActivity {
         List<Factura> facturaList = new ArrayList<>();
 
         // Creación Recycler View
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FacturaAdapter(facturaList);
-        recyclerView.setAdapter(adapter);
+        RecyclerView recyclerView = getRecyclerView(facturaList);
 
         // Obtener el valor de "USING_RETROMOCK" desde el Intent
         Intent intent = getIntent();
@@ -94,6 +93,22 @@ public class FacturaActivity extends AppCompatActivity {
                 Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Mostrar mensaje de no hay resultados
+        facturaViewModel.getToastMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @NonNull
+    private RecyclerView getRecyclerView(List<Factura> facturaList) {
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new FacturaAdapter(facturaList);
+        recyclerView.setAdapter(adapter);
+        return recyclerView;
     }
 
     @Override
@@ -105,29 +120,25 @@ public class FacturaActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_filters) {
-            // Obtenemos el importe máximo de las facturas
-            float maxImporte = facturaViewModel.getMaxImporte();
+            FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT");
+            if (filtroFragment == null) { // Crear filtro si no existe
+                filtroFragment = new FiltroFragment();
 
-            // Crear el Bundle para pasar al fragmento
-            Bundle bundle = new Bundle();
-            bundle.putFloat("MAX_IMPORTE", maxImporte);
-
-            // Hacer visible el contenedor de fragmentos
-            binding.fragmentContainer.setVisibility(View.VISIBLE);
-
-            // Mostrar el fragmento en toda la pantalla
-            if (getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT") == null) {
-                FiltroFragment filtroFragment = new FiltroFragment();
+                // Bundle para el importe máximo
+                float maxImporte = facturaViewModel.getMaxImporte();
+                Bundle bundle = new Bundle();
+                bundle.putFloat("MAX_IMPORTE", maxImporte);
                 filtroFragment.setArguments(bundle);
 
+                // Creación fragmento de filtros
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT"); // Agregar un TAG
+                transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT");
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
 
-
+            binding.fragmentContainer.setVisibility(View.VISIBLE);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -138,6 +149,7 @@ public class FacturaActivity extends AppCompatActivity {
         binding.recyclerView.setVisibility(View.VISIBLE);
         binding.fragmentContainer.setVisibility(View.GONE);
     }
+
     @Override
     public void onBackPressed() { // Sobreescribir el metodo deprecated por problemas
         FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -158,57 +170,8 @@ public class FacturaActivity extends AppCompatActivity {
         Double importeMin = bundle.getDouble("IMPORTE_MIN");
         Double importeMax = bundle.getDouble("IMPORTE_MAX");
 
-        // Filtrar las facturas
-        List<Factura> facturasFiltradas = filtrarFacturas(estadosSeleccionados, String.valueOf(fechaInicio), String.valueOf(fechaFin), importeMin, importeMax);
-
-        // Mostrar las facturas filtradas si se encontró algun resultado
-        if (facturasFiltradas != null && !facturasFiltradas.isEmpty()) {
-            runOnUiThread(() -> adapter.setFacturas(facturasFiltradas));
-        } else {
-            Toast.makeText(FacturaActivity.this, "No se encontraron resultados", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public List<Factura> filtrarFacturas(List<String> estadosSeleccionados, String fechaInicioString, String fechaFinString, Double importeMin, Double importeMax) {
-        List<Factura> facturasFiltradas = new ArrayList<>();
-
-        // Obtener las facturas cargadas desde el ViewModel
-        List<Factura> facturas = facturaViewModel.getFacturas().getValue();
-
-        if (facturas == null) {
-            return facturasFiltradas;  // Si no hay facturas, retornamos una lista vacía
-        }
-
-        // Convertir las fechas de String a Date para poder compararlas
-        Date fechaInicio = stringToDate(fechaInicioString);
-        Date fechaFin = stringToDate(fechaFinString);
-
-        // Filtrar por estado
-        for (Factura factura : facturas) {
-            boolean cumpleEstado = (estadosSeleccionados == null || estadosSeleccionados.contains(factura.getDescEstado()));
-
-            // Filtrar por fecha
-            boolean cumpleFecha = true;
-
-            if (fechaInicio != null && factura.getFecha() != null) {
-                cumpleFecha &= Objects.requireNonNull(stringToDate(factura.getFecha())).compareTo(fechaInicio) >= 0;  // Verificar si la factura es posterior o igual a la fecha de inicio
-            }
-
-            if (fechaFin != null && factura.getFecha() != null) {
-                cumpleFecha &= Objects.requireNonNull(stringToDate(factura.getFecha())).compareTo(fechaFin) <= 0;  // Verificar si la factura es anterior o igual a la fecha de fin
-            }
-
-            // Filtrar por importe
-            boolean cumpleImporte = (importeMin == null || factura.getImporteOrdenacion() >= importeMin) &&
-                    (importeMax == null || factura.getImporteOrdenacion() <= importeMax);
-
-            // Si cumple todos los filtros, añadir la factura a la lista filtrada
-            if (cumpleEstado && cumpleFecha && cumpleImporte) {
-                facturasFiltradas.add(factura);
-            }
-        }
-
-        return facturasFiltradas;
+        // Llamar al ViewModel para aplicar los filtros
+        facturaViewModel.aplicarFiltros(estadosSeleccionados, fechaInicio, fechaFin, importeMin, importeMax);
     }
 
     @Override

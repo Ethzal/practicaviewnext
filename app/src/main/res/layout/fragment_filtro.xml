@@ -256,6 +256,7 @@
                     android:layout_height="wrap_content"
                     android:textAllCaps="false"
                     app:cornerRadius="24dp"
+                    android:textColor="@color/white"
                     android:text="@string/aplicar_filtros" />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnBorrar"

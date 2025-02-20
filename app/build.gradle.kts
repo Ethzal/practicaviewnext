@@ -23,6 +23,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug{
+            isDebuggable = true
         }
     }
     compileOptions {
@@ -33,6 +37,7 @@ android {
     // Habilitar View Binding
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

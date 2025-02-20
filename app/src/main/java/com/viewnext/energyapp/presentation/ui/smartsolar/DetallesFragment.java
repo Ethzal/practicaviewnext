@@ -5,8 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +21,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.practicaviewnext.R;
 import com.example.practicaviewnext.databinding.FragmentDetallesBinding;
-import com.example.practicaviewnext.databinding.FragmentFiltroBinding;
-import com.viewnext.energyapp.data.api.ApiService;
-import com.viewnext.energyapp.data.model.DetallesResponse;
 import com.viewnext.energyapp.presentation.viewmodel.DetallesViewModel;
-import com.viewnext.energyapp.presentation.viewmodel.FacturaViewModel;
 
 import java.util.Objects;
-
-import retrofit2.Call;
 
 public class DetallesFragment extends Fragment {
     private DetallesViewModel viewModel;
@@ -79,15 +73,18 @@ public class DetallesFragment extends Fragment {
         TextView message = new TextView(context);
         message.setText("El tiempo estimado de activación de tu autoconsumo es de 1 a 2 meses, éste variará en función de tu comunidad autónoma y distribuidora");
         message.setPadding(100, 60, 100, 60);
+        message.setTextColor(Color.BLACK);
         message.setGravity(Gravity.CENTER);
         message.setTextSize(16);
 
         // Crear el diálogo
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setCustomTitle(title)
                 .setView(message)
-                .setPositiveButton("Aceptar", (d, which) -> d.dismiss())
-                .show();
+                .setPositiveButton("Aceptar", (d, which) -> d.dismiss());
+        AlertDialog dialog = builder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.show();
 
         // Personalizar el botón después de mostrar el diálogo
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
