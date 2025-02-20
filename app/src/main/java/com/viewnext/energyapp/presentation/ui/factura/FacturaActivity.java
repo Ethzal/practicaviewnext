@@ -59,14 +59,32 @@ public class FacturaActivity extends AppCompatActivity {
         List<Factura> facturaList = new ArrayList<>();
 
         // Creación Recycler View
-        RecyclerView recyclerView = getRecyclerView(facturaList);
+        getRecyclerView(facturaList);
 
         // Obtener el valor de "USING_RETROMOCK" desde el Intent
         Intent intent = getIntent();
         boolean usingRetromock = intent.getBooleanExtra("USING_RETROMOCK", false);  // Default es false (Retrofit)
 
         // Cargar facturas
-        facturaViewModel.loadFacturas(usingRetromock);
+        if (facturaViewModel.hayFiltrosActivos()) {
+            List<String> estados = facturaViewModel.getEstados().getValue();
+            String fechaInicio = facturaViewModel.getFechaInicio().getValue();
+            String fechaFin = facturaViewModel.getFechaFin().getValue();
+            List<Float> valoresSlider = facturaViewModel.getValoresSlider().getValue();
+
+            if (estados == null) estados = new ArrayList<>();
+            if (fechaInicio == null) fechaInicio = "";
+            if (fechaFin == null) fechaFin = "";
+            if (valoresSlider == null || valoresSlider.size() < 2) {
+                valoresSlider = new ArrayList<>();
+                valoresSlider.add(0.0f);
+                valoresSlider.add(facturaViewModel.getMaxImporte());
+            }
+
+            facturaViewModel.aplicarFiltros(estados, fechaInicio, fechaFin, (double) valoresSlider.get(0), (double) valoresSlider.get(1));
+        } else {
+            facturaViewModel.loadFacturas(usingRetromock);
+        }
 
         // Toolbar
         setSupportActionBar(binding.toolbar);
@@ -80,10 +98,11 @@ public class FacturaActivity extends AppCompatActivity {
         // Actualizar RecyclerView con las nuevas facturas
         facturaViewModel.getFacturas().observe(this, facturas -> {
             if (facturas != null) {
+                if (facturas.isEmpty() && facturaViewModel.hayFiltrosActivos()) {
+                    Toast.makeText(FacturaActivity.this, "No se encontraron facturas", Toast.LENGTH_SHORT).show();
+                }
                 adapter = new FacturaAdapter(facturas);
-                recyclerView.setAdapter(adapter);
-            } else {
-                Toast.makeText(FacturaActivity.this, "No se encontraron facturas", Toast.LENGTH_SHORT).show();
+                binding.recyclerView.setAdapter(adapter);
             }
         });
 
@@ -93,22 +112,13 @@ public class FacturaActivity extends AppCompatActivity {
                 Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Mostrar mensaje de no hay resultados
-        facturaViewModel.getToastMessage().observe(this, error -> {
-            if (error != null) {
-                Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
-    @NonNull
-    private RecyclerView getRecyclerView(List<Factura> facturaList) {
+    private void getRecyclerView(List<Factura> facturaList) {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FacturaAdapter(facturaList);
         recyclerView.setAdapter(adapter);
-        return recyclerView;
     }
 
     @Override

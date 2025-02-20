@@ -31,19 +31,30 @@ public class FilterFacturasUseCase {
 
         // Iterar sobre todas las facturas y aplicar los filtros
         for (Factura factura : facturas) {
-            boolean cumpleEstado = (estadosSeleccionados == null || estadosSeleccionados.contains(factura.getDescEstado()));
+            boolean cumpleEstado = (estadosSeleccionados == null || estadosSeleccionados.isEmpty() || estadosSeleccionados.contains(factura.getDescEstado()));
             boolean cumpleFecha = true;
 
-            if (fechaInicio != null && factura.getFecha() != null) {
-                cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaInicio) >= 0;
+            if (fechaInicioString != null && !fechaInicioString.isEmpty() && factura.getFecha() != null) {
+                if (fechaInicio != null) {
+                    cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaInicio) >= 0;
+                }
             }
 
-            if (fechaFin != null && factura.getFecha() != null) {
-                cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaFin) <= 0;
+            if (fechaFinString != null && !fechaFinString.isEmpty() && factura.getFecha() != null) {
+                if (fechaFin != null) {
+                    cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaFin) <= 0;
+                }
             }
 
-            boolean cumpleImporte = (importeMin == null || factura.getImporteOrdenacion() >= importeMin) &&
-                    (importeMax == null || factura.getImporteOrdenacion() <= importeMax);
+            boolean cumpleImporte = true;
+
+            if (importeMin != null) {
+                cumpleImporte &= factura.getImporteOrdenacion() >= importeMin;
+            }
+
+            if (importeMax != null) {
+                cumpleImporte &= factura.getImporteOrdenacion() <= importeMax;
+            }
 
             // Si la factura cumple con todos los filtros, agregarla a la lista filtrada
             if (cumpleEstado && cumpleFecha && cumpleImporte) {

@@ -45,10 +45,11 @@ public class FiltroFragment extends Fragment {
         restoreFiltersViewModel();
 
         // Valores por defecto de las fechas
+        /*
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
         binding.btnSelectDate.setText(fechaDefault);
-        binding.btnSelectDateUntil.setText(fechaDefault);
+        binding.btnSelectDateUntil.setText(fechaDefault);*/
 
         // Botón fecha desde
         binding.btnSelectDate.setOnClickListener(v -> showDatePicker(binding.btnSelectDate));
@@ -165,9 +166,10 @@ public class FiltroFragment extends Fragment {
             String fechaInicio = binding.btnSelectDate.getText().toString();
             String fechaFin = binding.btnSelectDateUntil.getText().toString();
 
+            /*
             @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
-
+            */
             List<Float> valoresSlider = binding.rangeSlider.getValues();
             float importeMin = valoresSlider.get(0);
             float importeMax = valoresSlider.get(1);
@@ -178,33 +180,22 @@ public class FiltroFragment extends Fragment {
             viewModel.getFechaFin().setValue(fechaFin);
             viewModel.getValoresSlider().setValue(valoresSlider);
 
-            // Validar que al menos un filtro esté activo
-            boolean filtrosValidos = !estados.isEmpty() || !fechaInicio.equals(fechaDefault) || !fechaFin.equals(fechaDefault) ||
-                    (importeMin != 0f && importeMax != viewModel.getMaxImporte());
-
-            FacturaActivity activity = (FacturaActivity) getActivity();
-
-            if (filtrosValidos) {
-                // Crear un Bundle con los filtros
-                Bundle bundle = new Bundle();
-                if (!estados.isEmpty()) {
-                    bundle.putStringArrayList("ESTADOS", (ArrayList<String>) estados);
-                }
-                bundle.putString("FECHA_INICIO", fechaInicio);
-                bundle.putString("FECHA_FIN", fechaFin);
-                bundle.putDouble("IMPORTE_MIN", importeMin);
-                bundle.putDouble("IMPORTE_MAX", importeMax);
-
-                // Pasar los datos a la actividad
-
-                if (activity != null) {
-                    activity.aplicarFiltros(bundle);
-                }
-            }else{
-                Toast.makeText(getActivity(), "No se aplicaron filtros", Toast.LENGTH_SHORT).show();
+            // Crear un Bundle con los filtros
+            Bundle bundle = new Bundle();
+            if (!estados.isEmpty()) {
+                bundle.putStringArrayList("ESTADOS", (ArrayList<String>) estados);
             }
-            assert activity != null;
-            activity.restoreMainView();
+            bundle.putString("FECHA_INICIO", fechaInicio);
+            bundle.putString("FECHA_FIN", fechaFin);
+            bundle.putDouble("IMPORTE_MIN", importeMin);
+            bundle.putDouble("IMPORTE_MAX", importeMax);
+
+            // Pasar los datos a la actividad
+            FacturaActivity activity = (FacturaActivity) getActivity();
+            if (activity != null) {
+                activity.aplicarFiltros(bundle);
+                activity.restoreMainView();
+            }
             getParentFragmentManager().popBackStack();
         });
 
@@ -229,10 +220,8 @@ public class FiltroFragment extends Fragment {
 
         // Botón borrar filtros
         binding.btnBorrar.setOnClickListener(v -> {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
-            binding.btnSelectDate.setText(fechaDefault);
-            binding.btnSelectDateUntil.setText(fechaDefault);
+            binding.btnSelectDate.setText("día/mes/año");
+            binding.btnSelectDateUntil.setText("día/mes/año");
 
             binding.rangeSlider.setValues(0f,viewModel.getMaxImporte());
 
@@ -245,12 +234,12 @@ public class FiltroFragment extends Fragment {
 
         // Recuperar los datos tras rotar
         viewModel.getFechaInicio().observe(getViewLifecycleOwner(), fecha -> {
-            if (fecha != null) {
+            if (fecha != null && !fecha.isEmpty()) {
                 binding.btnSelectDate.setText(fecha);
             }
         });
         viewModel.getFechaFin().observe(getViewLifecycleOwner(), fecha -> {
-            if (fecha != null) {
+            if (fecha != null && !fecha.isEmpty()) {
                 binding.btnSelectDateUntil.setText(fecha);
             }
         });

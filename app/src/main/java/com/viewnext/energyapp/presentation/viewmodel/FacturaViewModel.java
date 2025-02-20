@@ -30,13 +30,6 @@ public class FacturaViewModel extends AndroidViewModel {
     private MutableLiveData<List<Float>> valoresSlider = new MutableLiveData<>();
     private MutableLiveData<List<String>> estados = new MutableLiveData<>();
 
-    // Toast
-    private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
-
-    public LiveData<String> getToastMessage() {
-        return toastMessage;
-    }
-
     public FacturaViewModel(Application application) {
         super(application);
         this.getFacturasUseCase = new GetFacturasUseCase(application);
@@ -91,10 +84,21 @@ public class FacturaViewModel extends AndroidViewModel {
             public void onSuccess(List<Factura> facturas) {
                 facturasOriginales = new ArrayList<>(facturas);
 
-                // Si hay filtros activos, mantener la lista filtrada
-                if (!facturasFiltradas.isEmpty()) {
-                    facturasLiveData.postValue(facturasFiltradas);
+                // Reapply filters if any are active
+                if (hayFiltrosActivos()) {
+                    List<String> estadosSeleccionados = estados.getValue();
+                    String fechaInicioValue = fechaInicio.getValue();
+                    String fechaFinValue = fechaFin.getValue();
+                    List<Float> valoresSliderValue = valoresSlider.getValue();
+
+                    if (valoresSliderValue != null && valoresSliderValue.size() == 2) {
+                        Double importeMin = (double) valoresSliderValue.get(0);
+                        Double importeMax = (double) valoresSliderValue.get(1);
+
+                        aplicarFiltros(estadosSeleccionados, fechaInicioValue, fechaFinValue, importeMin, importeMax);
+                    }
                 } else {
+                    // If no filters are active, show the original list
                     facturasLiveData.postValue(facturasOriginales);
                 }
             }
@@ -111,15 +115,13 @@ public class FacturaViewModel extends AndroidViewModel {
         if (facturasOriginales.isEmpty()) {
             return;
         }
+
         // UseCase de filtrar facturas
         filterFacturasUseCase.filtrarFacturas(facturasOriginales, estadosSeleccionados, fechaInicio, fechaFin, importeMin, importeMax, new FilterFacturasUseCaseCallback() {
             @Override
             public void onSuccess(List<Factura> facturasFiltradasResult) {
                 facturasFiltradas = new ArrayList<>(facturasFiltradasResult);
                 facturasLiveData.setValue(facturasFiltradas);
-                if (facturasFiltradas.isEmpty()) {
-                    toastMessage.setValue("No se encontraron resultados");
-                }
             }
 
             @Override
@@ -142,5 +144,12 @@ public class FacturaViewModel extends AndroidViewModel {
             }
         }
         return maxImporte;
+    }
+
+    public boolean hayFiltrosActivos() {
+        return (estados.getValue() != null && !estados.getValue().isEmpty()) ||
+                (fechaInicio.getValue() != null && !fechaInicio.getValue().equals("día/mes/año")) ||
+                (fechaFin.getValue() != null && !fechaFin.getValue().equals("día/mes/año")) ||
+                (valoresSlider.getValue() != null && (valoresSlider.getValue().get(0) > 0 || valoresSlider.getValue().get(1) < getMaxImporte()));
     }
 }

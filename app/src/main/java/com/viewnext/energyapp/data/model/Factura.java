@@ -46,6 +46,9 @@ public class Factura {
     public static Date stringToDate(String fechaString) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         try {
+            if (fechaString.equals("día/mes/año")) {
+                return null;
+            }
             return sdf.parse(fechaString);  // Convierte el String a Date
         } catch (ParseException e) {
             Log.e("FechaParseError", "Error al convertir la fecha: " + fechaString, e);
