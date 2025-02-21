@@ -12,14 +12,23 @@ import co.infinum.retromock.BodyFactory;
 
 public class RetromockClient {
 
-    private static Retromock retromock = null;
+    private static volatile Retromock retromock = null;
 
-    public static Retromock getRetromockInstance(Context context) { // Creamos retromock de forma parecida a retrofit
+    private RetromockClient(){
+        // Constructor privado y vacío para evitar que se creen instancias externas
+    }
+
+    public static Retromock getRetromockInstance(Context context) {
+        // Usamos sincronización doble para evitar crear múltiples instancias
         if (retromock == null) {
-            retromock = new Retromock.Builder()
-                    .retrofit(RetrofitClient.getRetrofitInstance()) // Usamos la instancia de Retrofit existente
-                    .defaultBodyFactory(new ResourceBodyFactory(context)) // Define como generar el contenido
-                    .build();
+            synchronized (RetromockClient.class) {
+                if (retromock == null) {
+                    retromock = new Retromock.Builder()
+                            .retrofit(RetrofitClient.getRetrofitInstance())  // Usa la instancia de Retrofit
+                            .defaultBodyFactory(new ResourceBodyFactory(context))  // Define el generador de cuerpos mock
+                            .build();
+                }
+            }
         }
         return retromock;
     }
