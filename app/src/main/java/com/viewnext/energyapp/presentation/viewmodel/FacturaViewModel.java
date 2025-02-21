@@ -84,7 +84,6 @@ public class FacturaViewModel extends AndroidViewModel {
             public void onSuccess(List<Factura> facturas) {
                 facturasOriginales = new ArrayList<>(facturas);
 
-                // Reapply filters if any are active
                 if (hayFiltrosActivos()) {
                     List<String> estadosSeleccionados = estados.getValue();
                     String fechaInicioValue = fechaInicio.getValue();
@@ -98,7 +97,6 @@ public class FacturaViewModel extends AndroidViewModel {
                         aplicarFiltros(estadosSeleccionados, fechaInicioValue, fechaFinValue, importeMin, importeMax);
                     }
                 } else {
-                    // If no filters are active, show the original list
                     facturasLiveData.postValue(facturasOriginales);
                 }
             }

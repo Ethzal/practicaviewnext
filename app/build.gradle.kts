@@ -84,4 +84,10 @@ dependencies {
     // Annotation processor
     annotationProcessor(libs.lifecycle.compiler)
 
+    // Mockito
+    testImplementation(libs.mockito.core)
+
+    // LiveData en ViewModel (testing)
+    testImplementation(libs.core.testing)
+
 }
