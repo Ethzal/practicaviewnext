@@ -3,6 +3,7 @@ package com.viewnext.energyapp.presentation.ui.factura;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class FiltroFragment extends Fragment {
     private FragmentFiltroBinding binding;
@@ -43,13 +45,6 @@ public class FiltroFragment extends Fragment {
 
         // Restaurar filtros si están disponibles
         restoreFiltersViewModel();
-
-        // Valores por defecto de las fechas
-        /*
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
-        binding.btnSelectDate.setText(fechaDefault);
-        binding.btnSelectDateUntil.setText(fechaDefault);*/
 
         // Botón fecha desde
         binding.btnSelectDate.setOnClickListener(v -> showDatePicker(binding.btnSelectDate));
@@ -95,25 +90,79 @@ public class FiltroFragment extends Fragment {
     }
 
     private void showDatePicker(MaterialButton button) {
-        // Obtener la fecha actual
         final Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Cargar la fecha existente en el calendario si está disponible
+        if (button == binding.btnSelectDate) {
+            String fechaInicio = viewModel.getFechaInicio().getValue();
+            if (fechaInicio != null && !fechaInicio.equals("día/mes/año")) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(sdf.parse(fechaInicio)));
+                } catch (Exception e) {
+                    Log.e("FiltroFragment", "Error al parsear fecha de inicio", e);
+                }
+            }
+        } else if (button == binding.btnSelectDateUntil) {
+            String fechaFin = viewModel.getFechaFin().getValue();
+            if (fechaFin != null && !fechaFin.equals("día/mes/año")) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(sdf.parse(fechaFin)));
+                } catch (Exception e) {
+                    Log.e("FiltroFragment", "Error al parsear fecha de fin", e);
+                }
+            }
+        }
+
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Crear y mostrar el DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireActivity(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Formatear la fecha seleccionada
                     Calendar selectedCalendar = Calendar.getInstance();
                     selectedCalendar.set(selectedYear, selectedMonth, selectedDay);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     String formattedDate = sdf.format(selectedCalendar.getTime());
 
-                    // Establecer la fecha en el botón correspondiente
-                    button.setText(formattedDate);
+                    if (button == binding.btnSelectDate) {
+                        // Validar que la fecha de inicio no sea mayor que la fecha de fin
+                        String fechaFin = viewModel.getFechaFin().getValue();
+                        if (fechaFin != null && !fechaFin.equals("día/mes/año")) { // Solo validar si la fecha "Hasta" ya está seleccionada
+                            try {
+                                Calendar fechaFinCalendar = Calendar.getInstance();
+                                fechaFinCalendar.setTime(Objects.requireNonNull(sdf.parse(fechaFin)));
+                                if (formattedDate.compareTo(fechaFin)>0) {
+                                    Toast.makeText(getContext(), "La fecha de inicio no puede ser mayor que la fecha de fin", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                            } catch (Exception e) {
+                                Log.e("FiltroFragment", "Error al validar fecha", e);
+                            }
+                        }
+                        binding.btnSelectDate.setText(formattedDate);
+                        viewModel.getFechaInicio().setValue(formattedDate);
+
+                    } else if (button == binding.btnSelectDateUntil) {
+                        // Validar que la fecha de fin no sea menor que la fecha de inicio
+                        String fechaInicio = viewModel.getFechaInicio().getValue();
+                        if (fechaInicio != null && !fechaInicio.equals("día/mes/año")) { // Solo validar si la fecha "Desde" ya está seleccionada
+                            try {
+                                Calendar fechaInicioCalendar = Calendar.getInstance();
+                                fechaInicioCalendar.setTime(Objects.requireNonNull(sdf.parse(fechaInicio)));
+
+                                if (selectedCalendar.before(fechaInicioCalendar)) {
+                                    Toast.makeText(getContext(), "La fecha de fin no puede ser menor que la fecha de inicio", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            } catch (Exception e) {
+                                Log.e("FiltroFragment", "Error al validar fecha", e);
+                            }
+                        }
+                        binding.btnSelectDateUntil.setText(formattedDate);
+                        viewModel.getFechaFin().setValue(formattedDate);
+                    }
                 },
                 year, month, dayOfMonth);
 
@@ -166,10 +215,6 @@ public class FiltroFragment extends Fragment {
             String fechaInicio = binding.btnSelectDate.getText().toString();
             String fechaFin = binding.btnSelectDateUntil.getText().toString();
 
-            /*
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String fechaDefault = dateFormat.format(Calendar.getInstance().getTime());
-            */
             List<Float> valoresSlider = binding.rangeSlider.getValues();
             float importeMin = valoresSlider.get(0);
             float importeMax = valoresSlider.get(1);
