@@ -265,6 +265,12 @@ public class FiltroFragment extends Fragment {
 
         // Botón borrar filtros
         binding.btnBorrar.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String fecha = sdf.format(calendar.getTime());
+            viewModel.getFechaInicio().setValue(fecha);
+            viewModel.getFechaFin().setValue(fecha);
+
             binding.btnSelectDate.setText("día/mes/año");
             binding.btnSelectDateUntil.setText("día/mes/año");
 
