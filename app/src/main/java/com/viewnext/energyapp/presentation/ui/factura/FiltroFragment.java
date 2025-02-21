@@ -30,6 +30,7 @@ import java.util.Objects;
 public class FiltroFragment extends Fragment {
     private FragmentFiltroBinding binding;
     private FacturaViewModel viewModel;
+    float maxImporte;
 
     public FiltroFragment() { // Constructor vacío
     }
@@ -53,7 +54,7 @@ public class FiltroFragment extends Fragment {
         // Recuperar el Bundle con maxImporte
         Bundle bundle = getArguments();
         if (bundle != null) {
-            float maxImporte = bundle.getFloat("MAX_IMPORTE", 0f);
+            maxImporte = bundle.getFloat("MAX_IMPORTE", 0f);
 
             if (maxImporte > 0) {
                 binding.rangeSlider.setValueFrom(0f);
@@ -75,13 +76,18 @@ public class FiltroFragment extends Fragment {
             @Override
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
                 List<Float> values = slider.getValues();
+                float EPSILON = 0.0001f;
                 if (values.size() == 2) {
                     float minValue = values.get(0);
                     float maxValue = values.get(1);
 
                     // Actualizar los TextViews con los valores seleccionados
                     binding.tvMinValue.setText(String.format("%.0f €", minValue));
-                    binding.tvMaxValue.setText(String.format("%.0f €", maxValue));
+                    if(maxValue >= maxImporte - EPSILON){
+                        binding.tvMaxValue.setText(String.format("%.02f €", maxValue));
+                    }else{
+                        binding.tvMaxValue.setText(String.format("%.0f €", maxValue));
+                    }
                 }
             }
         });
