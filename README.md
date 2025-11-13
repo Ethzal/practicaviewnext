@@ -8,6 +8,12 @@ Aquí se puede ver el flujo principal de la aplicación, desde el dashboard hast
 
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/ace5172e-ae61-47e2-a2b1-2c2cd0f8c090" />
 
+## 🚀 Probar la Aplicación (APK)
+
+Se ha generado una versión `release` de la aplicación para que pueda ser instalada y probada en un dispositivo Android.
+
+➡️ **[Descargar la última versión desde Releases](https://github.com/Ethzal/practicaviewnext/releases/latest)**
+
 ## 🏛️ Arquitectura y Principios de Diseño
 
 La base de este proyecto es una implementación estricta de **Clean Architecture**, separando el código en tres capas principales:
