@@ -36,7 +36,7 @@ El código de los tests se puede encontrar en el directorio `/app/src/test/`.
 
 ## 🛠️ Stack Tecnológico y Librerías
 
-| Componente | Tecnología / Librer-ía |
+| Componente | Tecnología / Librería |
 | :--- | :--- |
 | **Lenguaje** | `Java` |
 | **Arquitectura** | `Clean Architecture`, `MVVM` |
