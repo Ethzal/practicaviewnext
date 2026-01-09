@@ -215,6 +215,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:buttonTint="@color/holo_green_light"
                 android:text="@string/pagadas"/>
 
             <CheckBox
@@ -222,6 +223,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:buttonTint="@color/holo_green_light"
                 android:text="@string/anuladas"/>
 
             <CheckBox
@@ -229,6 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:buttonTint="@color/holo_green_light"
                 android:text="@string/cuota_fija" />
 
             <CheckBox
@@ -236,6 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:buttonTint="@color/holo_green_light"
                 android:text="@string/pendientes_de_pago"/>
 
             <CheckBox
@@ -243,6 +247,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:buttonTint="@color/holo_green_light"
                 android:text="@string/plan_de_pago"/>
             <LinearLayout
                 android:layout_width="match_parent"
