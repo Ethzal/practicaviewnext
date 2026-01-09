@@ -67,6 +67,9 @@ dependencies {
     // For control over item selection of both touch and mouse driven selection
     implementation(libs.recyclerview.selection)
 
+    // Skeleton & Shimmer
+    implementation(libs.shimmer)
+
     // Retromock
     implementation(libs.retromock)
     implementation(libs.okhttp)

@@ -61,6 +61,9 @@ public class FacturaActivity extends AppCompatActivity {
         // Creación Recycler View
         getRecyclerView(facturaList);
 
+        // Mostrar skeleton
+        showShimmer();
+
         // Obtener el valor de "USING_RETROMOCK" desde el Intent
         Intent intent = getIntent();
         boolean usingRetromock = intent.getBooleanExtra("USING_RETROMOCK", false);  // Default es false (Retrofit)
@@ -97,6 +100,7 @@ public class FacturaActivity extends AppCompatActivity {
 
         // Actualizar RecyclerView con las nuevas facturas
         facturaViewModel.getFacturas().observe(this, facturas -> {
+            hideShimmer(); // Ocultar skeleton
             if (facturas != null) {
                 if (facturas.isEmpty() && facturaViewModel.hayFiltrosActivos()) {
                     Toast.makeText(FacturaActivity.this, "No se encontraron facturas", Toast.LENGTH_SHORT).show();
@@ -108,6 +112,7 @@ public class FacturaActivity extends AppCompatActivity {
 
         // Mostrar mensaje de error
         facturaViewModel.getErrorMessage().observe(this, error -> {
+            hideShimmer(); // Ocultar skeleton
             if (error != null) {
                 Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
             }
@@ -119,6 +124,19 @@ public class FacturaActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FacturaAdapter(facturaList);
         recyclerView.setAdapter(adapter);
+    }
+
+    // Mostrar/ocultar skeleton
+    private void showShimmer() {
+        binding.shimmerLayout.setVisibility(View.VISIBLE);
+        binding.shimmerLayout.startShimmer();
+        binding.recyclerView.setVisibility(View.GONE);
+    }
+
+    private void hideShimmer() {
+        binding.shimmerLayout.stopShimmer();
+        binding.shimmerLayout.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
