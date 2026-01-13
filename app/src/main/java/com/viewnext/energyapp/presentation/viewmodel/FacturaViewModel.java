@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.viewnext.energyapp.data.local.entity.FacturaEntity;
+import com.viewnext.energyapp.data.mapper.FacturaMapper;
 import com.viewnext.energyapp.data.model.Factura;
 import com.viewnext.energyapp.domain.FilterFacturasUseCase;
 import com.viewnext.energyapp.domain.FilterFacturasUseCaseCallback;
@@ -23,6 +25,7 @@ public class FacturaViewModel extends AndroidViewModel {
     private final FilterFacturasUseCase filterFacturasUseCase;
     private List<Factura> facturasOriginales = new ArrayList<>();
     private List<Factura> facturasFiltradas = new ArrayList<>();
+    public LiveData<List<FacturaEntity>> facturas;
 
     // Filtros guardados
     private MutableLiveData<String> fechaInicio = new MutableLiveData<>();
@@ -34,6 +37,7 @@ public class FacturaViewModel extends AndroidViewModel {
         super(application);
         this.getFacturasUseCase = new GetFacturasUseCase(application);
         this.filterFacturasUseCase = new FilterFacturasUseCase(application);
+        this.facturas = getFacturasUseCase.getFacturasFromDb();
     }
 
     // Getters y Setters
@@ -79,31 +83,26 @@ public class FacturaViewModel extends AndroidViewModel {
 
     // Cargar facturas
     public void loadFacturas(boolean usingRetromock) {
-        getFacturasUseCase.execute(usingRetromock, new GetFacturasUseCaseCallback() {
-            @Override
-            public void onSuccess(List<Factura> facturas) {
-                facturasOriginales = new ArrayList<>(facturas);
+        getFacturasUseCase.refresh(usingRetromock); // API -> Room
 
-                if (hayFiltrosActivos()) {
-                    List<String> estadosSeleccionados = estados.getValue();
-                    String fechaInicioValue = fechaInicio.getValue();
-                    String fechaFinValue = fechaFin.getValue();
-                    List<Float> valoresSliderValue = valoresSlider.getValue();
+        getFacturasUseCase.getFacturasFromDb().observeForever(facturasEntities -> {
+            List<Factura> facturas = FacturaMapper.toDomainList(facturasEntities);
+            facturasOriginales = new ArrayList<>(facturas);
 
-                    if (valoresSliderValue != null && valoresSliderValue.size() == 2) {
-                        Double importeMin = (double) valoresSliderValue.get(0);
-                        Double importeMax = (double) valoresSliderValue.get(1);
+            if (hayFiltrosActivos()) {
+                List<String> estadosSeleccionados = estados.getValue();
+                String fechaInicioValue = fechaInicio.getValue();
+                String fechaFinValue = fechaFin.getValue();
+                List<Float> valoresSliderValue = valoresSlider.getValue();
 
-                        aplicarFiltros(estadosSeleccionados, fechaInicioValue, fechaFinValue, importeMin, importeMax);
-                    }
-                } else {
-                    facturasLiveData.postValue(facturasOriginales);
+                if (valoresSliderValue != null && valoresSliderValue.size() == 2) {
+                    Double importeMin = (double) valoresSliderValue.get(0);
+                    Double importeMax = (double) valoresSliderValue.get(1);
+
+                    aplicarFiltros(estadosSeleccionados, fechaInicioValue, fechaFinValue, importeMin, importeMax);
                 }
-            }
-
-            @Override
-            public void onError(String error) {
-                errorMessage.postValue(error);
+            } else {
+                facturasLiveData.postValue(facturasOriginales);
             }
         });
     }

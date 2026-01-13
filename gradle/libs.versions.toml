@@ -22,6 +22,9 @@ legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 shimmer = "0.5.0"
+roomCommonJvm = "2.8.4"
+roomRuntime = "2.8.4"
+roomCompiler = "2.8.4"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -52,6 +55,9 @@ legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", ver
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

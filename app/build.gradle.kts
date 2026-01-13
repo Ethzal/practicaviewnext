@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.room.common.jvm)
+    implementation(libs.room.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -92,5 +94,6 @@ dependencies {
 
     // LiveData en ViewModel (testing)
     testImplementation(libs.core.testing)
+    annotationProcessor(libs.room.compiler)
 
 }

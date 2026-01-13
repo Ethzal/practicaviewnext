@@ -4,7 +4,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient { // Configuración de Retrofit
-    private static final String BASE_URL = "https://viewnextandroid.wiremockapi.cloud/";
+    // private static final String BASE_URL = "https://viewnextandroid.wiremockapi.cloud/";
+    private static final String BASE_URL = "https://francisco-pacheco.com/api/";
 
     private RetrofitClient() {
         // Constructor privado y vacío para evitar que se creen instancias externas

@@ -19,6 +19,10 @@ public class Factura {
         this.fecha = fecha;
     }
 
+    public Factura(){
+        // Constructor vacio
+    }
+
     // Getters y setters
     public String getDescEstado() {
         return descEstado;

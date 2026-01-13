@@ -9,7 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface ApiService { // Retrofit genera el código para implementar esta interfaz
-    @GET("facturas") // Endpoint
+    @GET("invoices.json") // Endpoint
     Call<FacturaResponse> getFacturas(); // Devuelve objeto Call con la respuesta de la API (FacturaResponse)
     @Mock // En el caso de usar retromock
     @MockResponse(body="facturas_mock.json") // Facturas mock dentro de assets
