@@ -1,8 +1,9 @@
 [versions]
 agp = "8.8.0"
+kotlin = "1.9.24"
 converterGson = "2.9.0"
 coreTesting = "2.2.0"
-googleMaterial = "1.12.0'"
+googleMaterial = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -25,6 +26,7 @@ shimmer = "0.5.0"
 roomCommonJvm = "2.8.4"
 roomRuntime = "2.8.4"
 roomCompiler = "2.8.4"
+lifecycleLivedataCore = "2.10.0"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -58,7 +60,10 @@ shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+lifecycle-livedata-core = { group = "androidx.lifecycle", name = "lifecycle-livedata-core", version.ref = "lifecycleLivedataCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+android-library = { id = "com.android.library" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

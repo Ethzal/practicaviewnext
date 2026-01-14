@@ -25,75 +25,26 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
-        debug{
+        debug {
             isDebuggable = true
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    // Habilitar View Binding
     buildFeatures {
-        viewBinding = true
         buildConfig = true
     }
 }
 
 dependencies {
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
-    implementation(libs.filament.android)
-    implementation(libs.legacy.support.v4)
-    implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.room.common.jvm)
-    implementation(libs.room.runtime)
+    implementation(project(":presentation"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    // Retrofit
-    implementation(libs.retrofit)
-    // Retrofit with Scalar Converter
-    implementation(libs.converter.scalars)
-    // Retrofit Converter Gson
-    implementation(libs.converter.gson)
-
-    // RecyclerView
-    implementation(libs.recyclerview)
-    // For control over item selection of both touch and mouse driven selection
-    implementation(libs.recyclerview.selection)
-
-    // Skeleton & Shimmer
-    implementation(libs.shimmer)
-
-    // Retromock
-    implementation(libs.retromock)
-    implementation(libs.okhttp)
-
-    // ViewModel
-    implementation(libs.lifecycle.viewmodel)
-    // LiveData
-    implementation(libs.lifecycle.livedata)
-    // Lifecycles only (without ViewModel or LiveData)
-    implementation(libs.lifecycle.runtime)
-
-    // Saved state module for ViewModel
-    implementation(libs.lifecycle.viewmodel.savedstate)
-
-    // Annotation processor
-    annotationProcessor(libs.lifecycle.compiler)
-
-    // Mockito
-    testImplementation(libs.mockito.core)
-
-    // LiveData en ViewModel (testing)
-    testImplementation(libs.core.testing)
-    annotationProcessor(libs.room.compiler)
-
 }

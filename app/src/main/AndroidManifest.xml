@@ -15,13 +15,13 @@
         android:theme="@style/Theme.PracticaViewnext"
         tools:targetApi="31">
         <activity
-            android:name="com.viewnext.energyapp.presentation.ui.smartsolar.SmartSolarActivity"
+            android:name="com.example.presentation.ui.smartsolar.SmartSolarActivity"
             android:exported="false" />
         <activity
-            android:name="com.viewnext.energyapp.presentation.ui.factura.FacturaActivity"
+            android:name="com.example.presentation.ui.factura.FacturaActivity"
             android:exported="false" />
         <activity
-            android:name="com.viewnext.energyapp.presentation.ui.home.MainActivity"
+            android:name="com.example.presentation.ui.home.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

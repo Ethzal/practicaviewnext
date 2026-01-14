@@ -1,0 +1,32 @@
+package com.example.data.local;
+
+import android.content.Context;
+
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+
+import com.example.data.local.dao.FacturaDao;
+import com.example.data.local.entity.FacturaEntity;
+
+@Database(entities = {FacturaEntity.class}, version = 1)
+public abstract class AppDatabase extends RoomDatabase {
+    public abstract FacturaDao facturaDao();
+
+    private static volatile AppDatabase INSTANCE;
+
+    public static AppDatabase getInstance(Context context) {
+        if (INSTANCE == null) {
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(
+                            context.getApplicationContext(),
+                            AppDatabase.class,
+                            "app_db"
+                    ).build();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+}
