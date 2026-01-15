@@ -3,6 +3,8 @@ package com.example.presentation.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.data.repository.GetDetallesRepositoryImpl;
+import com.example.domain.repository.GetDetallesRepository;
 import com.example.domain.usecase.GetDetallesUseCase;
 import com.example.domain.model.Detalles;
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.List;
 public class DetallesViewModel extends ViewModel {
     private final GetDetallesUseCase useCase;
     private final MutableLiveData<List<Detalles>> detallesLiveData = new MutableLiveData<>();
+    private final GetDetallesRepository repository;
 
-    public DetallesViewModel(GetDetallesUseCase useCase) {
+    public DetallesViewModel(GetDetallesUseCase useCase, GetDetallesRepository repository) {
         this.useCase = useCase;
+        this.repository = repository;
     }
 
     public MutableLiveData<List<Detalles>> getDetalles() {
@@ -20,8 +24,7 @@ public class DetallesViewModel extends ViewModel {
     }
 
     public void loadDetalles() {
-        // Carga inicial
         useCase.refreshDetalles();
-        detallesLiveData.setValue(useCase.getDetalles());
+        ((GetDetallesRepositoryImpl) repository).getDetallesLiveData().observeForever(detallesLiveData::postValue);
     }
 }

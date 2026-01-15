@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.data.repository.GetDetallesRepositoryImpl;
-import com.example.domain.repository.GetDetallesRepository;
 import com.example.domain.usecase.GetDetallesUseCase;
 import com.example.presentation.R;
 import com.example.presentation.databinding.FragmentDetallesBinding;
@@ -44,17 +43,21 @@ public class DetallesFragment extends Fragment {
         binding = FragmentDetallesBinding.inflate(inflater, container, false);
 
         // Creación ViewModel de Detalles con UsaCase y Repository
-        GetDetallesRepository repo = new GetDetallesRepositoryImpl(requireActivity().getApplication());
-        GetDetallesUseCase useCase = new GetDetallesUseCase(repo);
+        GetDetallesRepositoryImpl repoImpl = new GetDetallesRepositoryImpl(requireActivity().getApplication());
+        GetDetallesUseCase useCase = new GetDetallesUseCase(repoImpl);
 
         viewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @SuppressWarnings("unchecked")
             @NonNull
             @Override
-            @SuppressWarnings("unchecked")
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new DetallesViewModel(useCase);
+                if (modelClass.isAssignableFrom(DetallesViewModel.class)) {
+                    return (T) new DetallesViewModel(useCase, repoImpl);
+                }
+                throw new IllegalArgumentException("Unknown ViewModel class");
             }
         }).get(DetallesViewModel.class);
+
 
         // Cargar detalles y mostrarlos
         viewModel.loadDetalles();
