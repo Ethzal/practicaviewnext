@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.data.repository.GetFacturasRepositoryImpl;
-import com.example.domain.repository.GetFacturasRepository;
 import com.example.domain.usecase.FilterFacturasUseCase;
 import com.example.domain.usecase.GetFacturasUseCase;
 import com.example.presentation.R;
@@ -69,7 +68,7 @@ public class FacturaActivity extends AppCompatActivity {
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(FacturaViewModel.class)) {
                     return (T) new FacturaViewModel(getFacturasUseCase, filterFacturasUseCase,
-                            (GetFacturasRepository) repositoryImpl);
+                            repositoryImpl);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }
@@ -85,29 +84,33 @@ public class FacturaActivity extends AppCompatActivity {
         // Mostrar skeleton
         showShimmer();
 
+        boolean primeraVez = savedInstanceState == null;
+
         // Obtener el valor de "USING_RETROMOCK" desde el Intent
         Intent intent = getIntent();
         boolean usingRetromock = intent.getBooleanExtra("USING_RETROMOCK", false);  // Default es false (Retrofit)
 
         // Cargar facturas
-        if (facturaViewModel.hayFiltrosActivos()) {
-            List<String> estados = facturaViewModel.getEstados().getValue();
-            String fechaInicio = facturaViewModel.getFechaInicio().getValue();
-            String fechaFin = facturaViewModel.getFechaFin().getValue();
-            List<Float> valoresSlider = facturaViewModel.getValoresSlider().getValue();
+        if(primeraVez){
+            if (facturaViewModel.hayFiltrosActivos()) {
+                List<String> estados = facturaViewModel.getEstados().getValue();
+                String fechaInicio = facturaViewModel.getFechaInicio().getValue();
+                String fechaFin = facturaViewModel.getFechaFin().getValue();
+                List<Float> valoresSlider = facturaViewModel.getValoresSlider().getValue();
 
-            if (estados == null) estados = new ArrayList<>();
-            if (fechaInicio == null) fechaInicio = "";
-            if (fechaFin == null) fechaFin = "";
-            if (valoresSlider == null || valoresSlider.size() < 2) {
-                valoresSlider = new ArrayList<>();
-                valoresSlider.add(0.0f);
-                valoresSlider.add(facturaViewModel.getMaxImporte());
+                if (estados == null) estados = new ArrayList<>();
+                if (fechaInicio == null) fechaInicio = "";
+                if (fechaFin == null) fechaFin = "";
+                if (valoresSlider == null || valoresSlider.size() < 2) {
+                    valoresSlider = new ArrayList<>();
+                    valoresSlider.add(0.0f);
+                    valoresSlider.add(facturaViewModel.getMaxImporte());
+                }
+
+                facturaViewModel.aplicarFiltros(estados, fechaInicio, fechaFin, (double) valoresSlider.get(0), (double) valoresSlider.get(1));
+            } else {
+                facturaViewModel.loadFacturas(usingRetromock);
             }
-
-            facturaViewModel.aplicarFiltros(estados, fechaInicio, fechaFin, (double) valoresSlider.get(0), (double) valoresSlider.get(1));
-        } else {
-            facturaViewModel.loadFacturas(usingRetromock);
         }
 
         // Toolbar
