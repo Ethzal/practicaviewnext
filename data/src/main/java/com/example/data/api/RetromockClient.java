@@ -44,13 +44,13 @@ public class RetromockClient {
 
         @Override
         public InputStream create(@NonNull final String input) throws IOException { // Metodo principal de BofyFactory
-            if ("facturas_mock.json".equals(input)) {
-                return context.getAssets().open("facturas_mock.json"); // Se carga las facturas desde assets
-            }if ("detalles_mock.json".equals(input)) {
-                return context.getAssets().open("detalles_mock.json"); // Se carga los detealles desde assets
+            switch (input) {
+                case "facturas_mock.json":    return context.getAssets().open("facturas_mock.json");
+                case "facturas_mock2.json":   return context.getAssets().open("facturas_mock2.json");
+                case "facturas_mock3.json":   return context.getAssets().open("facturas_mock3.json");
+                case "detalles_mock.json":    return context.getAssets().open("detalles_mock.json");
+                default: return null;
             }
-
-            return null;
         }
     }
 }
