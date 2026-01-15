@@ -24,7 +24,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/cau_c_digo_autoconsumo"
+                    android:text="@string/cau_codigo_autoconsumo"
                     android:textColor="#999" />
                 <TextView
                     android:id="@+id/cau"
@@ -112,7 +112,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/compensaci_n_de_excedentes"
+                    android:text="@string/compensacion_de_excedentes"
                     android:layout_marginBottom="8dp"
                     android:textColor="#999"/>
                 <TextView
@@ -136,7 +136,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/potencia_de_instalaci_n"
+                    android:text="@string/potencia_de_instalacion"
                     android:layout_marginBottom="8dp"
                     android:textColor="#999"/>
                 <TextView

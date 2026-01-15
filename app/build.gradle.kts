@@ -43,8 +43,11 @@ android {
 dependencies {
 
     implementation(project(":presentation"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.shimmer)
 }

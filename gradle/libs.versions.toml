@@ -27,6 +27,8 @@ roomCommonJvm = "2.8.4"
 roomRuntime = "2.8.4"
 roomCompiler = "2.8.4"
 lifecycleLivedataCore = "2.10.0"
+appcompatVersion = "1.7.1"
+googleMaterialVersion = "1.13.0"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -61,6 +63,8 @@ room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.r
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 lifecycle-livedata-core = { group = "androidx.lifecycle", name = "lifecycle-livedata-core", version.ref = "lifecycleLivedataCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterialVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

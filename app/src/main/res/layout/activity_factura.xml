@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:text="@string/atr_s"
+                android:text="@string/atras"
                 android:textColor="@android:color/holo_green_light"
                 android:textAllCaps="false"
                 android:textSize="20sp"
