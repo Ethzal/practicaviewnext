@@ -38,31 +38,9 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
         facturaDao = db.facturaDao();
     }
 
-//    public void getFacturas(boolean usingRetromock, GetFacturasRepositoryCallback callback){
-//        ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
-//        Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
-//
-//        // Realizar la llamada y procesar la respuesta
-//        call.enqueue(new Callback<>() {
-//            @Override
-//            public void onResponse(@NonNull Call<FacturaResponse> call, @NonNull Response<FacturaResponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    callback.onSuccess(response.body().getFacturas());
-//                } else {
-//                    callback.onError("Error en la respuesta de la API");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
-//                callback.onError("Error de conexión: " + t.getMessage());
-//            }
-//        });
-//    }
-
     // Room -> LiveData
     public LiveData<List<Factura>> getFacturasLiveData() {
-        return new LiveData<List<Factura>>() {
+        return new LiveData<>() {
             private final Observer<List<FacturaEntity>> observer =
                     entities -> setValue(FacturaMapper.toDomainList(entities));
 
@@ -83,7 +61,7 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
         ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
         Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
 
-        call.enqueue(new Callback<FacturaResponse>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<FacturaResponse> call, @NonNull Response<FacturaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
