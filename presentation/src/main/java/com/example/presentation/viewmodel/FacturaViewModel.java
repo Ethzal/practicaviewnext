@@ -2,6 +2,7 @@ package com.example.presentation.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.data.repository.GetFacturasRepositoryImpl;
@@ -12,7 +13,6 @@ import com.example.domain.usecase.GetFacturasUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class FacturaViewModel extends ViewModel {
 
@@ -64,30 +64,57 @@ public class FacturaViewModel extends ViewModel {
         return estados;
     }
 
+    private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
+
+    private Observer<List<Factura>> facturasObserver;
+
+    public LiveData<Boolean> getLoading() {
+        return loading;
+    }
+
     // Cargar facturas desde el UseCase
     public void loadFacturas(boolean usingRetromock) {
-        getFacturasUseCase.refreshFacturas(usingRetromock); // Actualiza la DB desde API
+        loading.postValue(true);
 
-        ((GetFacturasRepositoryImpl) repository).getFacturasLiveData().observeForever(facturas -> {
-            facturasOriginales = new ArrayList<>(facturas);
+        if (facturasObserver != null) {
+            ((GetFacturasRepositoryImpl) repository)
+                    .getFacturasLiveData()
+                    .removeObserver(facturasObserver);
+        }
 
-            if (hayFiltrosActivos()) {
-                aplicarFiltros(
-                        estados.getValue(),
-                        fechaInicio.getValue(),
-                        fechaFin.getValue(),
-                        valoresSlider != null && valoresSlider.getValue() != null && valoresSlider.getValue().size() == 2
-                                ? (double) valoresSlider.getValue().get(0)
-                                : null,
-                        valoresSlider != null && valoresSlider.getValue() != null && valoresSlider.getValue().size() == 2
-                                ? (double) valoresSlider.getValue().get(1)
-                                : null
-                );
+        facturasObserver = facturas -> {
+
+                facturasOriginales = new ArrayList<>(facturas);
+
+                if (hayFiltrosActivos()) {
+                    aplicarFiltros(
+                            estados.getValue(),
+                            fechaInicio.getValue(),
+                            fechaFin.getValue(),
+                            valoresSlider != null && valoresSlider.getValue() != null && valoresSlider.getValue().size() == 2
+                                    ? (double) valoresSlider.getValue().get(0)
+                                    : null,
+                            valoresSlider != null && valoresSlider.getValue() != null && valoresSlider.getValue().size() == 2
+                                    ? (double) valoresSlider.getValue().get(1)
+                                    : null
+                    );
+                } else {
+                    facturasLiveData.postValue(facturasOriginales);
+                }
+            if (facturasOriginales.isEmpty()) {
+                loading.postValue(true);
             } else {
-                facturasLiveData.postValue(facturasOriginales);
+                loading.postValue(false);
             }
-        });
+        };
+
+        ((GetFacturasRepositoryImpl) repository)
+                .getFacturasLiveData()
+                .observeForever(facturasObserver);
+
+        getFacturasUseCase.refreshFacturas(usingRetromock);
     }
+
 
     // Aplicar filtros a la lista de facturas
     public void aplicarFiltros(List<String> estadosSeleccionados, String fechaInicio,

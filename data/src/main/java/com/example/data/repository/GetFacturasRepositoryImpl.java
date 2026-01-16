@@ -58,25 +58,28 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
 
     // API -> Room
     public void refreshFacturas(boolean usingRetromock) {
-        ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
-        Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            facturaDao.deleteAll();
+            ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
+            Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
 
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<FacturaResponse> call, @NonNull Response<FacturaResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<FacturaEntity> entities = FacturaMapper.toEntityList(response.body().getFacturas());
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        facturaDao.deleteAll();
-                        facturaDao.insertAll(entities);
-                    });
+            call.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<FacturaResponse> call, @NonNull Response<FacturaResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<FacturaEntity> entities = FacturaMapper.toEntityList(response.body().getFacturas());
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            facturaDao.deleteAll();
+                            facturaDao.insertAll(entities);
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
-                Log.e("GetFacturasRepositoryImpl", "Error refrescando facturas: " + t.getMessage());
-            }
+                @Override
+                public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
+                    Log.e("GetFacturasRepositoryImpl", "Error refrescando facturas: " + t.getMessage());
+                }
+            });
         });
     }
 

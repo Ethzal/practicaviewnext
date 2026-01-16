@@ -18,14 +18,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.data.repository.GetFacturasRepositoryImpl;
 import com.example.domain.usecase.FilterFacturasUseCase;
 import com.example.domain.usecase.GetFacturasUseCase;
 import com.example.presentation.R;
 import com.example.presentation.databinding.ActivityFacturaBinding;
-import com.example.domain.model.Factura;
 import com.example.presentation.viewmodel.FacturaViewModel;
 import com.example.presentation.adapter.FacturaAdapter;
 
@@ -56,7 +54,7 @@ public class FacturaActivity extends AppCompatActivity {
             binding.fragmentContainer.setVisibility(View.VISIBLE);
         }
 
-        // Creación ViewModel de Factura con UseCase y Repository
+        // CreaciÃ³n ViewModel de Factura con UseCase y Repository
         GetFacturasRepositoryImpl repositoryImpl = new GetFacturasRepositoryImpl(getApplication());
         GetFacturasUseCase getFacturasUseCase = new GetFacturasUseCase(repositoryImpl);
         FilterFacturasUseCase filterFacturasUseCase = new FilterFacturasUseCase();
@@ -75,11 +73,10 @@ public class FacturaActivity extends AppCompatActivity {
         }).get(FacturaViewModel.class);
 
 
-        // Inicializar lista de facturas
-        List<Factura> facturaList = new ArrayList<>();
-
-        // Creación Recycler View
-        getRecyclerView(facturaList);
+        // Adapter
+        adapter = new FacturaAdapter(new ArrayList<>());
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(adapter);
 
         // Mostrar skeleton
         showShimmer();
@@ -113,41 +110,40 @@ public class FacturaActivity extends AppCompatActivity {
             }
         }
 
+        facturaViewModel.getLoading().observe(this, isLoading -> {
+            if (Boolean.TRUE.equals(isLoading)) {
+                showShimmer();
+            } else {
+                hideShimmer();
+            }
+        });
+
         // Toolbar
         setSupportActionBar(binding.toolbar);
 
-        // Botón atrás
+        // BotÃ³n atrÃ¡s
         binding.backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // Configuración del título
+        // ConfiguraciÃ³n del tÃ­tulo
         binding.toolbarTitle.setText("Facturas");
 
         // Actualizar RecyclerView con las nuevas facturas
         facturaViewModel.getFacturas().observe(this, facturas -> {
-            hideShimmer(); // Ocultar skeleton
-            if (facturas != null) {
-                if (facturas.isEmpty() && facturaViewModel.hayFiltrosActivos()) {
-                    Toast.makeText(FacturaActivity.this, "No se encontraron facturas", Toast.LENGTH_SHORT).show();
-                }
-                adapter = new FacturaAdapter(facturas);
-                binding.recyclerView.setAdapter(adapter);
+            if (facturas == null) return;
+
+            if (facturas.isEmpty() && facturaViewModel.hayFiltrosActivos()) {
+                Toast.makeText(this, "No se encontraron facturas", Toast.LENGTH_SHORT).show();
             }
+
+            adapter.setFacturas(facturas);
         });
 
         // Mostrar mensaje de error
         facturaViewModel.getErrorMessage().observe(this, error -> {
-            hideShimmer(); // Ocultar skeleton
             if (error != null) {
                 Toast.makeText(FacturaActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void getRecyclerView(List<Factura> facturaList) {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FacturaAdapter(facturaList);
-        recyclerView.setAdapter(adapter);
     }
 
     // Mostrar/ocultar skeleton
@@ -164,7 +160,7 @@ public class FacturaActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) { // Crear menú para el botón filtros
+    public boolean onCreateOptionsMenu(Menu menu) { // Crear menÃº para el botÃ³n filtros
         getMenuInflater().inflate(R.menu.menu_factura, menu);
         return true;
     }
@@ -176,13 +172,13 @@ public class FacturaActivity extends AppCompatActivity {
             if (filtroFragment == null) { // Crear filtro si no existe
                 filtroFragment = new FiltroFragment();
 
-                // Bundle para el importe máximo
+                // Bundle para el importe mÃ¡ximo
                 float maxImporte = facturaViewModel.getMaxImporte();
                 Bundle bundle = new Bundle();
                 bundle.putFloat("MAX_IMPORTE", maxImporte);
                 filtroFragment.setArguments(bundle);
 
-                // Creación fragmento de filtros
+                // CreaciÃ³n fragmento de filtros
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT");
