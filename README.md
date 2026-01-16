@@ -14,6 +14,21 @@ Se ha generado una versión `release` de la aplicación para que pueda ser insta
 
 ➡️ **[Descargar la última versión desde Releases](https://github.com/Ethzal/practicaviewnext/releases/latest)**
 
+## ✨ Funcionalidades y Mejoras Clave
+
+*   **Arquitectura limpia y modular:**
+Implementación estricta de Clean Architecture con capas domain, data y presentation.
+Repositorios e interfaces claramente separados para mejorar la mantenibilidad y testeo.
+
+*   **Gestión de datos robusta:**
+Integración de Room Database para persistencia local.
+Repositorios que combinan API y almacenamiento local de forma eficiente.
+Manejo de LiveData para reflejar cambios en la UI de manera reactiva.
+
+*   **Mejoras en la UI/UX:**
+Skeleton shimmer loading en la lista de facturas.
+Rotación circular de mocks con Retromock para pruebas visuales.
+
 ## 🏛️ Arquitectura y Principios de Diseño
 
 La base de este proyecto es una implementación estricta de **Clean Architecture**, separando el código en tres capas principales:
@@ -29,21 +44,22 @@ Este enfoque garantiza un código **desacoplado, escalable, mantenible y altamen
 Una de las prioridades de este proyecto fue asegurar la calidad y la robustez del código a través de **tests unitarios**.
 
 *   **Frameworks Utilizados:** Se utilizó **JUnit 4** para la estructura de los tests y **Mockito** para crear objetos mock y simular las dependencias (como los Casos de Uso).
-*   **Componentes Testeados:** El foco principal fue la capa de Presentación, específicamente los `ViewModel`, para validar la lógica de negocio y la correcta actualización del estado de la UI a través de `LiveData`.
+*   **Componentes Testeados:** El foco principal fue la capa de domain con los casos de uso y de presentación, específicamente los `ViewModel`, para validar la lógica de negocio y la correcta actualización del estado de la UI a través de `LiveData`.
 *   **Técnicas Avanzadas:** Se utilizó `InstantTaskExecutorRule` para manejar los componentes de Arquitectura de Android fuera del hilo principal y se aplicó **reflexión** para la inyección de dependencias en un entorno de testing.
 
 El código de los tests se puede encontrar en el directorio `/app/src/test/`.
 
 ## 🛠️ Stack Tecnológico y Librerías
 
-| Componente | Tecnología / Librería |
-| :--- | :--- |
-| **Lenguaje** | `Java` |
-| **Arquitectura** | `Clean Architecture`, `MVVM` |
-| **Networking** | `Retrofit 2`, `Gson` |
-| **Interfaz de Usuario** | `XML`, `Material Design Components` |
-| **Control de Versiones** | `Git`, `GitHub Flow` |
-| **Testing** | `JUnit 4`, `Mockito`, `AndroidX Test Core` |
+| Componente               | Tecnología / Librería                      |
+|:-------------------------|:-------------------------------------------|
+| **Lenguaje**             | `Java`                                     |
+| **Arquitectura**         | `Clean Architecture`, `MVVM`               |
+| **Base de Datos**        | `Room Database`                   |
+| **Networking**           | `Retrofit 2`, `Gson`                       |
+| **Interfaz de Usuario**  | `XML`, `Material Design Components`        |
+| **Control de Versiones** | `Git`, `GitHub Flow`                       |
+| **Testing**              | `JUnit 4`, `Mockito`, `AndroidX Test Core` |
 
 ## 💡 Lecciones Aprendidas
 
