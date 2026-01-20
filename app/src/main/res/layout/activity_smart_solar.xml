@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:elevation="-1dp"
         android:background="@color/white"
-        tools:context="com.example.presentation.ui.smartsolar.SmartSolarActivity">
+        tools:context="com.viewnext.presentation.ui.smartsolar.SmartSolarActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarSmart"

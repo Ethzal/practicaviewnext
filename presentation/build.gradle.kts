@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.presentation"
+    namespace = "com.viewnext.presentation"
     compileSdk = 35
 
     defaultConfig {

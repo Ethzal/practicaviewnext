@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:elevation="-1dp"
     android:background="@color/white"
-    tools:context="com.example.presentation.ui.factura.FacturaActivity">
+    tools:context="com.viewnext.presentation.ui.factura.FacturaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

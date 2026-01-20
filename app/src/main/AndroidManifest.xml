@@ -12,16 +12,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PracticaViewnext"
+        android:theme="@style/Theme.EnergyApp"
         tools:targetApi="31">
         <activity
-            android:name="com.example.presentation.ui.smartsolar.SmartSolarActivity"
+            android:name="com.viewnext.presentation.ui.smartsolar.SmartSolarActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.presentation.ui.factura.FacturaActivity"
+            android:name="com.viewnext.presentation.ui.factura.FacturaActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.presentation.ui.home.MainActivity"
+            android:name="com.viewnext.presentation.ui.home.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

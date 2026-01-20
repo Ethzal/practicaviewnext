@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PracticaViewnext"
+rootProject.name = "EnergyApp"
 include(":app")
 include(":data")
 include(":domain")

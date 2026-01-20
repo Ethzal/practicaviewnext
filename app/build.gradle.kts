@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.practicaviewnext"
+    namespace = "com.viewnext.energyapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.practicaviewnext"
-        minSdk = 24
+        applicationId = "com.viewnext.energyapp"
+        minSdk = 27
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"

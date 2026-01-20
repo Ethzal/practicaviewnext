@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.example.presentation.ui.smartsolar.MiInstalacionFragment"
+        tools:context="com.viewnext.presentation.ui.smartsolar.MiInstalacionFragment"
         android:background="@color/white"
         android:padding="16dp">
         <LinearLayout
