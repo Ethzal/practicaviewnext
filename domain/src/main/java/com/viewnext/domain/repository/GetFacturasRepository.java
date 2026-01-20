@@ -5,7 +5,12 @@ import java.util.List;
 
 public interface GetFacturasRepository {
 
-//    List<Factura> getFacturasFromDb();
+    List<Factura> getFacturasFromDb();
 
-    void refreshFacturas(boolean usingRetromock);
+    interface RepositoryCallback {
+        void onSuccess(List<Factura> facturas);
+        void onError(String error);
+    }
+
+    void refreshFacturas(boolean usingRetromock, RepositoryCallback repositoryCallback);
 }

@@ -54,7 +54,7 @@ public class FacturaActivity extends AppCompatActivity {
             binding.fragmentContainer.setVisibility(View.VISIBLE);
         }
 
-        // CreaciÃ³n ViewModel de Factura con UseCase y Repository
+        // Creacion ViewModel de Factura con UseCase y Repository
         GetFacturasRepositoryImpl repositoryImpl = new GetFacturasRepositoryImpl(getApplication());
         GetFacturasUseCase getFacturasUseCase = new GetFacturasUseCase(repositoryImpl);
         FilterFacturasUseCase filterFacturasUseCase = new FilterFacturasUseCase();
@@ -65,8 +65,7 @@ public class FacturaActivity extends AppCompatActivity {
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(FacturaViewModel.class)) {
-                    return (T) new FacturaViewModel(getFacturasUseCase, filterFacturasUseCase,
-                            repositoryImpl);
+                    return (T) new FacturaViewModel(getFacturasUseCase, filterFacturasUseCase);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

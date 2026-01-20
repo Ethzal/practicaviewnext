@@ -2,12 +2,9 @@ package com.viewnext.presentation.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.viewnext.data.repository.GetFacturasRepositoryImpl;
 import com.viewnext.domain.model.Factura;
-import com.viewnext.domain.repository.GetFacturasRepository;
 import com.viewnext.domain.usecase.FilterFacturasUseCase;
 import com.viewnext.domain.usecase.GetFacturasUseCase;
 
@@ -20,7 +17,6 @@ public class FacturaViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final GetFacturasUseCase getFacturasUseCase;
     private final FilterFacturasUseCase filterFacturasUseCase;
-    private final GetFacturasRepository repository;
 
     private List<Factura> facturasOriginales = new ArrayList<>();
     private List<Factura> facturasFiltradas = new ArrayList<>();
@@ -32,11 +28,9 @@ public class FacturaViewModel extends ViewModel {
     private final MutableLiveData<List<String>> estados = new MutableLiveData<>();
 
     public FacturaViewModel(GetFacturasUseCase getFacturasUseCase,
-                            FilterFacturasUseCase filterFacturasUseCase,
-                            GetFacturasRepository repository) {
+                            FilterFacturasUseCase filterFacturasUseCase) {
         this.getFacturasUseCase = getFacturasUseCase;
         this.filterFacturasUseCase = filterFacturasUseCase;
-        this.repository = repository;
     }
 
     // Getters LiveData
@@ -66,8 +60,6 @@ public class FacturaViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
 
-    private Observer<List<Factura>> facturasObserver;
-
     public LiveData<Boolean> getLoading() {
         return loading;
     }
@@ -76,14 +68,9 @@ public class FacturaViewModel extends ViewModel {
     public void loadFacturas(boolean usingRetromock) {
         loading.postValue(true);
 
-        if (facturasObserver != null) {
-            ((GetFacturasRepositoryImpl) repository)
-                    .getFacturasLiveData()
-                    .removeObserver(facturasObserver);
-        }
-
-        facturasObserver = facturas -> {
-
+        getFacturasUseCase.execute(usingRetromock, new GetFacturasUseCase.Callback() {
+            @Override
+            public void onSuccess(List<Factura> facturas) {
                 facturasOriginales = new ArrayList<>(facturas);
 
                 if (hayFiltrosActivos()) {
@@ -101,19 +88,18 @@ public class FacturaViewModel extends ViewModel {
                 } else {
                     facturasLiveData.postValue(facturasOriginales);
                 }
-            if (facturasOriginales.isEmpty()) {
-                loading.postValue(true);
-            } else {
+
                 loading.postValue(false);
             }
-        };
 
-        ((GetFacturasRepositoryImpl) repository)
-                .getFacturasLiveData()
-                .observeForever(facturasObserver);
-
-        getFacturasUseCase.refreshFacturas(usingRetromock);
+            @Override
+            public void onError(String error) {
+                errorMessage.postValue(error);
+                loading.postValue(false);
+            }
+        });
     }
+
 
 
     // Aplicar filtros a la lista de facturas

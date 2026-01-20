@@ -1,7 +1,6 @@
 package com.viewnext.data.repository;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -57,9 +56,9 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
     }
 
     // API -> Room
-    public void refreshFacturas(boolean usingRetromock) {
+    @Override
+    public void refreshFacturas(boolean usingRetromock, RepositoryCallback callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            facturaDao.deleteAll();
             ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
             Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
 
@@ -71,13 +70,18 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
                         Executors.newSingleThreadExecutor().execute(() -> {
                             facturaDao.deleteAll();
                             facturaDao.insertAll(entities);
+
+                            // Devuelve la lista de dominio al UseCase
+                            callback.onSuccess(FacturaMapper.toDomainList(entities));
                         });
+                    } else {
+                        callback.onError("Error en la respuesta de la API");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
-                    Log.e("GetFacturasRepositoryImpl", "Error refrescando facturas: " + t.getMessage());
+                    callback.onError(t.getMessage() != null ? t.getMessage() : "Error desconocido");
                 }
             });
         });
