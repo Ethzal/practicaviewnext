@@ -11,6 +11,9 @@ import com.viewnext.domain.usecase.GetFacturasUseCase;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+
 public class FacturaViewModel extends ViewModel {
 
     private final MutableLiveData<List<Factura>> facturasLiveData = new MutableLiveData<>();
@@ -27,8 +30,11 @@ public class FacturaViewModel extends ViewModel {
     private final MutableLiveData<List<Float>> valoresSlider = new MutableLiveData<>();
     private final MutableLiveData<List<String>> estados = new MutableLiveData<>();
 
-    public FacturaViewModel(GetFacturasUseCase getFacturasUseCase,
-                            FilterFacturasUseCase filterFacturasUseCase) {
+    @Inject
+    public FacturaViewModel(
+            GetFacturasUseCase getFacturasUseCase,
+            FilterFacturasUseCase filterFacturasUseCase
+    ) {
         this.getFacturasUseCase = getFacturasUseCase;
         this.filterFacturasUseCase = filterFacturasUseCase;
     }

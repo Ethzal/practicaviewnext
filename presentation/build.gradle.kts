@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    id("com.google.dagger.hilt.android") version "2.58"
 }
 
 android {
@@ -28,7 +30,6 @@ android {
 dependencies {
 
     implementation(project(":domain"))
-    implementation(project(":data"))
 
     // UI
     implementation(libs.appcompat)
@@ -46,10 +47,14 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime)
+    implementation(libs.firebase.components)
 
     annotationProcessor(libs.lifecycle.compiler)
 
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.core.testing)
+
+    implementation("com.google.dagger:hilt-android:2.58")
+    kapt("com.google.dagger:hilt-compiler:2.58")
 }

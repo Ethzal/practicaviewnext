@@ -15,13 +15,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.viewnext.data.repository.GetFacturasRepositoryImpl;
-import com.viewnext.domain.usecase.FilterFacturasUseCase;
-import com.viewnext.domain.usecase.GetFacturasUseCase;
+import dagger.hilt.android.AndroidEntryPoint;
+
 import com.viewnext.presentation.R;
 import com.viewnext.presentation.databinding.ActivityFacturaBinding;
 import com.viewnext.presentation.viewmodel.FacturaViewModel;
@@ -30,6 +28,7 @@ import com.viewnext.presentation.adapter.FacturaAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+@AndroidEntryPoint
 public class FacturaActivity extends AppCompatActivity {
     private FacturaAdapter adapter;
     ActivityFacturaBinding binding;
@@ -55,21 +54,7 @@ public class FacturaActivity extends AppCompatActivity {
         }
 
         // Creacion ViewModel de Factura con UseCase y Repository
-        GetFacturasRepositoryImpl repositoryImpl = new GetFacturasRepositoryImpl(getApplication());
-        GetFacturasUseCase getFacturasUseCase = new GetFacturasUseCase(repositoryImpl);
-        FilterFacturasUseCase filterFacturasUseCase = new FilterFacturasUseCase();
-
-        facturaViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-            @SuppressWarnings("unchecked")
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                if (modelClass.isAssignableFrom(FacturaViewModel.class)) {
-                    return (T) new FacturaViewModel(getFacturasUseCase, filterFacturasUseCase);
-                }
-                throw new IllegalArgumentException("Unknown ViewModel class");
-            }
-        }).get(FacturaViewModel.class);
+        facturaViewModel = new ViewModelProvider(this).get(FacturaViewModel.class);
 
 
         // Adapter

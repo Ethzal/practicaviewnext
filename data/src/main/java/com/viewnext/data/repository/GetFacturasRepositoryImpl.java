@@ -20,15 +20,20 @@ import com.viewnext.domain.repository.GetFacturasRepository;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@Singleton
 public class GetFacturasRepositoryImpl implements GetFacturasRepository {
     private final ApiService apiServiceRetrofit;
     private final ApiService apiServiceMock;
     private final FacturaDao facturaDao;
 
+    @Inject
     public GetFacturasRepositoryImpl(Application application) {
         this.apiServiceRetrofit = RetrofitClient.getApiService();
         this.apiServiceMock = RetromockClient.getRetromockInstance(application).create(ApiService.class);

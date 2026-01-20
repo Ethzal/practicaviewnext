@@ -29,6 +29,7 @@ roomCompiler = "2.8.4"
 lifecycleLivedataCore = "2.10.0"
 appcompatVersion = "1.7.1"
 googleMaterialVersion = "1.13.0"
+firebaseComponents = "19.0.0"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -65,6 +66,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 lifecycle-livedata-core = { group = "androidx.lifecycle", name = "lifecycle-livedata-core", version.ref = "lifecycleLivedataCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterialVersion" }
+firebase-components = { group = "com.google.firebase", name = "firebase-components", version.ref = "firebaseComponents" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
