@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    id("com.google.dagger.hilt.android") version "2.58"
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -50,14 +50,19 @@ android {
 dependencies {
 
     implementation(project(":presentation"))
+    implementation(project(":data"))
+
+    // UI
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)
+    implementation(libs.shimmer)
 
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.shimmer)
 
+    // Dagger / Hilt
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 

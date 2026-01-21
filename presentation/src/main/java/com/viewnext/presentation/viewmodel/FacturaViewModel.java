@@ -13,7 +13,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class FacturaViewModel extends ViewModel {
 
     private final MutableLiveData<List<Factura>> facturasLiveData = new MutableLiveData<>();

@@ -53,9 +53,8 @@ public class FacturaActivity extends AppCompatActivity {
             binding.fragmentContainer.setVisibility(View.VISIBLE);
         }
 
-        // Creacion ViewModel de Factura con UseCase y Repository
+        // Creacion ViewModel de Factura
         facturaViewModel = new ViewModelProvider(this).get(FacturaViewModel.class);
-
 
         // Adapter
         adapter = new FacturaAdapter(new ArrayList<>());

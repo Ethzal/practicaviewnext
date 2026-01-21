@@ -4,10 +4,13 @@ import com.viewnext.domain.model.Factura;
 import com.viewnext.domain.repository.GetFacturasRepository;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class GetFacturasUseCase {
 
     private final GetFacturasRepository repository;
 
+    @Inject
     public GetFacturasUseCase(GetFacturasRepository repository) {
         this.repository = repository;
     }

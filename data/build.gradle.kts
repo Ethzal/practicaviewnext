@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    id("com.google.dagger.hilt.android") version "2.58"
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -46,12 +46,13 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
 
-    implementation("com.google.dagger:dagger:2.58")
-    kapt("com.google.dagger:dagger-compiler:2.58")
+    // Dagger / Hilt
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.3.0")
-    kapt("androidx.hilt:hilt-compiler:1.3.0")
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    kapt(libs.androidx.hilt.compiler)
 
-    implementation("com.google.dagger:hilt-android:2.58")
-    kapt("com.google.dagger:hilt-compiler:2.58")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }

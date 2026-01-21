@@ -1,6 +1,6 @@
 package com.viewnext.data.repository;
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,11 +35,11 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
     private final FacturaDao facturaDao;
 
     @Inject
-    public GetFacturasRepositoryImpl(Application application) {
+    public GetFacturasRepositoryImpl(@ApplicationContext Context context) {
         this.apiServiceRetrofit = RetrofitClient.getApiService();
-        this.apiServiceMock = RetromockClient.getRetromockInstance(application).create(ApiService.class);
+        this.apiServiceMock = RetromockClient.getRetromockInstance(context).create(ApiService.class);
 
-        AppDatabase db = AppDatabase.getInstance(application);
+        AppDatabase db = AppDatabase.getInstance(context);
         facturaDao = db.facturaDao();
     }
 
