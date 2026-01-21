@@ -16,6 +16,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.viewnext.presentation.adapter.ViewPagerAdapter;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class SmartSolarActivity extends AppCompatActivity {
 
     private ActivitySmartSolarBinding binding;

@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface GetDetallesRepository {
 //    List<Detalles> getDetalles();
-    void refreshDetalles();
+    void refreshDetalles(DetallesCallback<List<Detalles>> detallesCallback);
 }

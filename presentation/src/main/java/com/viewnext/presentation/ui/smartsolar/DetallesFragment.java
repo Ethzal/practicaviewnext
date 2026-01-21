@@ -20,14 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.viewnext.data.repository.GetDetallesRepositoryImpl;
-import com.viewnext.domain.usecase.GetDetallesUseCase;
 import com.viewnext.presentation.R;
 import com.viewnext.presentation.databinding.FragmentDetallesBinding;
 import com.viewnext.presentation.viewmodel.DetallesViewModel;
 
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class DetallesFragment extends Fragment {
     private DetallesViewModel viewModel;
     private FragmentDetallesBinding binding;
@@ -43,21 +44,22 @@ public class DetallesFragment extends Fragment {
         binding = FragmentDetallesBinding.inflate(inflater, container, false);
 
         // Creación ViewModel de Detalles con UsaCase y Repository
-        GetDetallesRepositoryImpl repoImpl = new GetDetallesRepositoryImpl(requireActivity().getApplication());
-        GetDetallesUseCase useCase = new GetDetallesUseCase(repoImpl);
+//        GetDetallesRepositoryImpl repoImpl = new GetDetallesRepositoryImpl(requireActivity().getApplication());
+//        GetDetallesUseCase useCase = new GetDetallesUseCase(repoImpl);
+//
+//        viewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+//            @SuppressWarnings("unchecked")
+//            @NonNull
+//            @Override
+//            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//                if (modelClass.isAssignableFrom(DetallesViewModel.class)) {
+//                    return (T) new DetallesViewModel(useCase, repoImpl);
+//                }
+//                throw new IllegalArgumentException("Unknown ViewModel class");
+//            }
+//        }).get(DetallesViewModel.class);
 
-        viewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-            @SuppressWarnings("unchecked")
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                if (modelClass.isAssignableFrom(DetallesViewModel.class)) {
-                    return (T) new DetallesViewModel(useCase, repoImpl);
-                }
-                throw new IllegalArgumentException("Unknown ViewModel class");
-            }
-        }).get(DetallesViewModel.class);
-
+        viewModel = new ViewModelProvider(this).get(DetallesViewModel.class);
 
         // Cargar detalles y mostrarlos
         viewModel.loadDetalles();
