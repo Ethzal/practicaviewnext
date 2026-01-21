@@ -1,13 +1,18 @@
 package com.viewnext.domain.usecase;
 
+import com.viewnext.domain.model.Detalles;
+import com.viewnext.domain.repository.DetallesCallback;
 import com.viewnext.domain.repository.GetDetallesRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.List;
 
 public class GetDetallesUseCaseTest {
 
@@ -28,10 +33,18 @@ public class GetDetallesUseCaseTest {
         // @Before
 
         // Act
-        useCase.refreshDetalles();
+        useCase.refreshDetalles(new DetallesCallback<>() {
+            @Override
+            public void onSuccess(List<Detalles> detalles) {
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+            }
+        });
 
         // Assert
-        verify(mockRepository).refreshDetalles();
+        verify(mockRepository).refreshDetalles(any(DetallesCallback.class));
         verifyNoMoreInteractions(mockRepository);
     }
 }
