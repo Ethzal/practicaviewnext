@@ -36,10 +36,10 @@ public class GetDetallesRepositoryImpl implements GetDetallesRepository {
         this.detallesCache = new ArrayList<>();
     }
 
-//    @Override
-//    public List<Detalles> getDetalles() {
-//        return new ArrayList<>(detallesCache);
-//    }
+    @Override
+    public List<Detalles> getDetalles() {
+        return new ArrayList<>(detallesCache);
+    }
 
     @Override
     public void refreshDetalles(DetallesCallback<List<Detalles>> callback) {

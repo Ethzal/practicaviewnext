@@ -7,12 +7,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-
+/**
+ * Caso de uso que filtra una lista de facturas según criterios de estado, fecha e importe.
+ * Encapsula la lógica de filtrado utilizada en la presentación de facturas.
+ */
 public class FilterFacturasUseCase {
 
     public FilterFacturasUseCase() {
+        // Constructor vacío
     }
 
+    /**
+     * Filtra las facturas según los criterios proporcionados.
+     * @param facturas           Lista completa de facturas a filtrar
+     * @param estadosSeleccionados Lista de estados a incluir; si es nula o vacía, no filtra por estado
+     * @param fechaInicioString  Fecha de inicio en formato String ("dd/MM/yyyy"); puede ser nula o vacía
+     * @param fechaFinString     Fecha de fin en formato String ("dd/MM/yyyy"); puede ser nula o vacía
+     * @param importeMin         Importe mínimo a incluir; puede ser nulo
+     * @param importeMax         Importe máximo a incluir; puede ser nulo
+     * @return Lista de facturas que cumplen con todos los filtros
+     */
     public List<Factura> filtrarFacturas(
             List<Factura> facturas,
             List<String> estadosSeleccionados,

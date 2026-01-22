@@ -2,7 +2,7 @@ package com.viewnext.domain.model;
 
 import java.util.List;
 
-public class DetallesResponse {
+public class DetallesResponse { // Modelar los datos de la respuesta de la API
     List<Detalles> detalles;
 
     // Get y Set
@@ -10,7 +10,7 @@ public class DetallesResponse {
         return detalles;
     }
 
-//    public void setDetalles(List<Detalles> detalles) {
-//        this.detalles = detalles;
-//    }
+    public void setDetalles(List<Detalles> detalles) {
+        this.detalles = detalles;
+    }
 }
