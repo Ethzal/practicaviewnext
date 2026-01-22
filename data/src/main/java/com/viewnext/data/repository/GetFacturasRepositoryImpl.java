@@ -28,12 +28,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Implementación del repositorio GetFacturasRepository. Esta clase es responsable de obtener
+ * los datos de facturas desde la base de datos local (Room) o desde una API remota (Retrofit o Retromock).
+ * También proporciona métodos para actualizar los datos desde la API y almacenarlos en la base de datos local.
+ */
 @Singleton
 public class GetFacturasRepositoryImpl implements GetFacturasRepository {
     private final ApiService apiServiceRetrofit;
     private final ApiService apiServiceMock;
     private final FacturaDao facturaDao;
 
+    /**
+     * Constructor que inicializa los servicios de Retrofit para la API y la instancia de la base de datos Room
+     * para las operaciones locales.
+     * @param context El contexto de la aplicación necesario para inicializar las instancias de API y Room.
+     */
     @Inject
     public GetFacturasRepositoryImpl(@ApplicationContext Context context) {
         this.apiServiceRetrofit = RetrofitClient.getApiService();
@@ -43,7 +53,10 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
         facturaDao = db.facturaDao();
     }
 
-    // Room -> LiveData
+    /**
+     * Obtiene un LiveData que observa la lista de facturas almacenadas en la base de datos local (Room).
+     * @return Un LiveData que contiene una lista de objetos Factura convertidos desde FacturaEntity.
+     */
     public LiveData<List<Factura>> getFacturasLiveData() {
         return new LiveData<>() {
             private final Observer<List<FacturaEntity>> observer =
@@ -61,7 +74,12 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
         };
     }
 
-    // API -> Room
+    /**
+     * Actualiza la lista de facturas ya sea desde la API Retrofit o Retromock, y las guarda en la base de datos Room.
+     * Se ejecuta de manera asíncrona para no bloquear el hilo principal.
+     * @param usingRetromock Booleano que indica si se debe usar Retromock o Retrofit para obtener los datos.
+     * @param callback El callback que maneja el éxito o error cuando se obtienen los datos.
+     */
     @Override
     public void refreshFacturas(boolean usingRetromock, RepositoryCallback callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -93,6 +111,10 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
         });
     }
 
+    /**
+     * Obtiene directamente la lista de facturas desde la base de datos local Room.
+     * @return Una lista de objetos Factura obtenidos desde la base de datos.
+     */
     public List<Factura> getFacturasFromDb() {
         List<FacturaEntity> entities = facturaDao.getFacturasDirect();
         return FacturaMapper.toDomainList(entities);

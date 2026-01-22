@@ -23,6 +23,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Implementación del repositorio GetDetallesRepository. Esta clase se encarga de obtener los detalles
+ * de una fuente remota (simulada por Retromock) y almacenarlos en una lista en caché.
+ * También proporciona un métodos para obtener los detalles como un LiveData.
+ */
 @Singleton
 public class GetDetallesRepositoryImpl implements GetDetallesRepository {
 
@@ -30,17 +35,31 @@ public class GetDetallesRepositoryImpl implements GetDetallesRepository {
     private final List<Detalles> detallesCache;
     private final MutableLiveData<List<Detalles>> detallesLiveData = new MutableLiveData<>();
 
+    /**
+     * Constructor que inicializa la instancia de la API (Retromock) y la caché de detalles.
+     * @param context El contexto de la aplicación necesario para inicializar Retromock.
+     */
     @Inject
     public GetDetallesRepositoryImpl(@ApplicationContext Context context) {
         this.apiServiceMock = RetromockClient.getRetromockInstance(context).create(ApiService.class);
         this.detallesCache = new ArrayList<>();
     }
 
+    /**
+     * Obtiene la lista de detalles almacenada en caché.
+     * @return Una lista de objetos Detalles que se encuentran en la caché.
+     */
     @Override
     public List<Detalles> getDetalles() {
         return new ArrayList<>(detallesCache);
     }
 
+    /**
+     * Realiza una solicitud a la API para obtener los detalles. Si la solicitud es exitosa,
+     * se actualiza la caché y se pasa la lista de detalles al callback.
+     * En caso de error, se pasa el error al callback.
+     * @param callback El callback que maneja el éxito o el error al obtener los detalles.
+     */
     @Override
     public void refreshDetalles(DetallesCallback<List<Detalles>> callback) {
         // Aquí es donde se hace la llamada real
@@ -68,6 +87,11 @@ public class GetDetallesRepositoryImpl implements GetDetallesRepository {
         });
     }
 
+    /**
+     * Obtiene el LiveData que contiene la lista de detalles. El LiveData permite observar
+     * los cambios en los detalles en tiempo real.
+     * @return Un LiveData que contiene la lista de detalles.
+     */
     public LiveData<List<Detalles>> getDetallesLiveData() {
         return detallesLiveData;
     }
