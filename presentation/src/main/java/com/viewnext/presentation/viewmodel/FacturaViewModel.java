@@ -15,6 +15,10 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
+/**
+ * ViewModel encargado de manejar la lógica de presentación de facturas,
+ * incluyendo la carga, filtrado y estado de la UI (loading/error)
+ */
 @HiltViewModel
 public class FacturaViewModel extends ViewModel {
 
@@ -26,12 +30,17 @@ public class FacturaViewModel extends ViewModel {
     private List<Factura> facturasOriginales = new ArrayList<>();
     private List<Factura> facturasFiltradas = new ArrayList<>();
 
-    // Filtros guardados
+    // LiveData que mantiene los filtros activos para la UI
     private final MutableLiveData<String> fechaInicio = new MutableLiveData<>();
     private final MutableLiveData<String> fechaFin = new MutableLiveData<>();
     private final MutableLiveData<List<Float>> valoresSlider = new MutableLiveData<>();
     private final MutableLiveData<List<String>> estados = new MutableLiveData<>();
 
+    /**
+     * Constructor con inyección de dependencias de los UseCases.
+     * @param getFacturasUseCase UseCase para obtener facturas
+     * @param filterFacturasUseCase UseCase para filtrar facturas
+     */
     @Inject
     public FacturaViewModel(
             GetFacturasUseCase getFacturasUseCase,
@@ -72,7 +81,12 @@ public class FacturaViewModel extends ViewModel {
         return loading;
     }
 
-    // Cargar facturas desde el UseCase
+    /**
+     * Carga las facturas desde el UseCase.
+     * Si hay filtros activos, los aplica automáticamente.
+     * Actualiza loading y errorMessage según el resultado.
+     * @param usingRetromock si se debe usar la fuente de datos de prueba
+     */
     public void loadFacturas(boolean usingRetromock) {
         loading.postValue(true);
 
@@ -108,9 +122,15 @@ public class FacturaViewModel extends ViewModel {
         });
     }
 
-
-
-    // Aplicar filtros a la lista de facturas
+    /**
+     * Aplica los filtros seleccionados sobre las facturas originales.
+     * Publica el resultado en facturasLiveData.
+     * @param estadosSeleccionados lista de estados a filtrar
+     * @param fechaInicio fecha mínima de la factura
+     * @param fechaFin fecha máxima de la factura
+     * @param importeMin importe mínimo
+     * @param importeMax importe máximo
+     */
     public void aplicarFiltros(List<String> estadosSeleccionados, String fechaInicio,
                                String fechaFin, Double importeMin, Double importeMax) {
         if (facturasOriginales.isEmpty()) return;
@@ -128,7 +148,10 @@ public class FacturaViewModel extends ViewModel {
         facturasLiveData.postValue(facturasFiltradas);
     }
 
-    // Obtener el importe máximo de las facturas
+    /**
+     * Obtiene el importe máximo de las facturas originales.
+     * @return importe máximo o 0 si no hay facturas
+     */
     public float getMaxImporte() {
         if (facturasOriginales == null || facturasOriginales.isEmpty()) return 0f;
 
@@ -141,7 +164,10 @@ public class FacturaViewModel extends ViewModel {
         return maxImporte;
     }
 
-    // Comprobar si hay filtros activos
+    /**
+     * Comprueba si algún filtro (estado, fechas, importe) está activo.
+     * @return true si hay algún filtro activo, false si no
+     */
     public boolean hayFiltrosActivos() {
         return (estados.getValue() != null && !estados.getValue().isEmpty()) ||
                 (fechaInicio.getValue() != null && !fechaInicio.getValue().equals("día/mes/año")) ||

@@ -16,6 +16,13 @@ import com.viewnext.presentation.databinding.ActivityMainBinding;
 import com.viewnext.presentation.ui.factura.FacturaActivity;
 import com.viewnext.presentation.ui.smartsolar.SmartSolarActivity;
 
+/**
+ * Activity principal de la aplicación.
+ * Funciones principales:
+ * - Configuración edge-to-edge para que la UI ocupe toda la pantalla.
+ * - Botón toggle para alternar entre Retromock y Retrofit (solo en modo debug).
+ * - Navegación a FacturaActivity y SmartSolarActivity.
+ */
 public class MainActivity extends AppCompatActivity { // Actividad principal, así empieza la app
 
     private ActivityMainBinding binding;

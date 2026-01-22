@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.viewnext.presentation.databinding.FragmentMiInstalacionBinding;
 
+/**
+ * Fragment que muestra la sección "Mi Instalación" de Smart Solar.
+ * Utiliza ViewBinding para acceder a los elementos de layout de manera segura.
+ */
 public class MiInstalacionFragment extends Fragment {
     private FragmentMiInstalacionBinding binding;
 

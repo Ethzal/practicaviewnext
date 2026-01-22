@@ -18,6 +18,12 @@ import com.viewnext.presentation.adapter.ViewPagerAdapter;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+/**
+ * Activity principal de Smart Solar.
+ * Muestra una interfaz con un ViewPager2 y un TabLayout para navegar
+ * entre las secciones "Mi Instalación", "Energía" y "Detalles".
+ * También gestiona el edge-to-edge layout y el botón de retroceso.
+ */
 @AndroidEntryPoint
 public class SmartSolarActivity extends AppCompatActivity {
 

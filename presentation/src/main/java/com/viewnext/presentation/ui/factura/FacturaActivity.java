@@ -28,6 +28,14 @@ import com.viewnext.presentation.adapter.FacturaAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity principal para la pantalla de facturas.
+ * Funcionalidades:
+ * - Mostrar lista de facturas en RecyclerView.
+ * - Aplicar filtros mediante FiltroFragment.
+ * - Skeleton (Shimmer) mientras se cargan datos.
+ * - Manejo de errores y mensajes de estado.
+ */
 @AndroidEntryPoint
 public class FacturaActivity extends AppCompatActivity {
     private FacturaAdapter adapter;
@@ -104,10 +112,10 @@ public class FacturaActivity extends AppCompatActivity {
         // Toolbar
         setSupportActionBar(binding.toolbar);
 
-        // BotÃ³n atrÃ¡s
+        // Botón atrás
         binding.backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // ConfiguraciÃ³n del tÃ­tulo
+        // Configuración del título
         binding.toolbarTitle.setText("Facturas");
 
         // Actualizar RecyclerView con las nuevas facturas
@@ -143,7 +151,7 @@ public class FacturaActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) { // Crear menÃº para el botÃ³n filtros
+    public boolean onCreateOptionsMenu(Menu menu) { // Crear menú para el botón filtros
         getMenuInflater().inflate(R.menu.menu_factura, menu);
         return true;
     }
@@ -161,7 +169,7 @@ public class FacturaActivity extends AppCompatActivity {
                 bundle.putFloat("MAX_IMPORTE", maxImporte);
                 filtroFragment.setArguments(bundle);
 
-                // CreaciÃ³n fragmento de filtros
+                // Creación fragmento de filtros
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT");

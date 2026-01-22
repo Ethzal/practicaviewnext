@@ -17,7 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.viewnext.presentation.R;
@@ -28,6 +27,13 @@ import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+/**
+ * Fragment que representa la sección "Detalles" dentro de Smart Solar.
+ * Se encarga de:
+ * - Cargar y mostrar detalles del autoconsumo usando DetallesViewModel.
+ * - Observar LiveData para actualizar la UI de manera reactiva.
+ * - Mostrar un pop-up informativo sobre el estado de la solicitud.
+ */
 @AndroidEntryPoint
 public class DetallesFragment extends Fragment {
     private DetallesViewModel viewModel;
@@ -44,21 +50,6 @@ public class DetallesFragment extends Fragment {
         binding = FragmentDetallesBinding.inflate(inflater, container, false);
 
         // Creación ViewModel de Detalles con UsaCase y Repository
-//        GetDetallesRepositoryImpl repoImpl = new GetDetallesRepositoryImpl(requireActivity().getApplication());
-//        GetDetallesUseCase useCase = new GetDetallesUseCase(repoImpl);
-//
-//        viewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-//            @SuppressWarnings("unchecked")
-//            @NonNull
-//            @Override
-//            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-//                if (modelClass.isAssignableFrom(DetallesViewModel.class)) {
-//                    return (T) new DetallesViewModel(useCase, repoImpl);
-//                }
-//                throw new IllegalArgumentException("Unknown ViewModel class");
-//            }
-//        }).get(DetallesViewModel.class);
-
         viewModel = new ViewModelProvider(this).get(DetallesViewModel.class);
 
         // Cargar detalles y mostrarlos
@@ -76,6 +67,11 @@ public class DetallesFragment extends Fragment {
         binding.btPopUp.setOnClickListener(this::showPopup);
         return binding.getRoot();
     }
+
+    /**
+     * Muestra un pop-up personalizado con información sobre el estado de la solicitud de autoconsumo.
+     * @param view Vista que dispara el pop-up
+     */
     @SuppressLint("SetTextI18n")
     private void showPopup(View view) {
         Context context = view.getContext();

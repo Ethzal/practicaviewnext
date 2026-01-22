@@ -27,6 +27,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Fragment que permite filtrar la lista de facturas.
+ * Funcionalidades:
+ * - Selección de fechas "Desde" y "Hasta" con validación.
+ * - Slider de rango de importes.
+ * - Selección de estados de factura mediante checkboxes.
+ * - Restauración automática de filtros desde el ViewModel.
+ * - Aplicar, cerrar o borrar filtros, comunicándose con FacturaActivity.
+ */
 public class FiltroFragment extends Fragment {
     private FragmentFiltroBinding binding;
     private FacturaViewModel viewModel;
@@ -95,6 +104,10 @@ public class FiltroFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Mostrar DatePicker y actualizar la fecha en el ViewModel y botón correspondiente.
+     * Valida que la fecha "Desde" no sea mayor que "Hasta" y viceversa.
+     */
     private void showDatePicker(MaterialButton button) {
         final Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -175,6 +188,7 @@ public class FiltroFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    // Restaurar filtros desde el ViewModel a la vista
     private void restoreFiltersViewModel() {
         // Restaurar fecha de inicio
         viewModel.getFechaInicio().observe(getViewLifecycleOwner(), fecha -> {
@@ -316,6 +330,7 @@ public class FiltroFragment extends Fragment {
         });
     }
 
+    // Obtiene los estados seleccionados como lista de strings
     @NonNull
     private List<String> getStrings() { // Estados
         List<String> estados = new ArrayList<>();

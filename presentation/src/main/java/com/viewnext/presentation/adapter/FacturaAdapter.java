@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Adapter para mostrar la lista de facturas en un RecyclerView.
+ * Formatea la fecha y el importe, y aplica estilos según el estado de cada factura.
+ */
 public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaViewHolder> { // Adapter para mostrar las facturas con un RecyclerView
     private List<Factura> facturas;
 
