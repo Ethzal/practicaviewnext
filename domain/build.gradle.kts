@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -29,14 +27,4 @@ dependencies {
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    // Dagger / Hilt
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
-    kapt(libs.androidx.hilt.compiler)
-
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
 }

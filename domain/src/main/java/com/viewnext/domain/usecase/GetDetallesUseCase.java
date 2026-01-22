@@ -6,12 +6,10 @@ import com.viewnext.domain.repository.GetDetallesRepository;
 
 import java.util.List;
 
-import javax.inject.Inject;
 
 public class GetDetallesUseCase {
     private final GetDetallesRepository repository;
 
-    @Inject
     public GetDetallesUseCase(GetDetallesRepository repository) {
         this.repository = repository;
     }
