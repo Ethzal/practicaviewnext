@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.viewnext.energyapp"
-        minSdk = 27
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -62,10 +62,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // Dagger / Hilt
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 }

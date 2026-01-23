@@ -47,21 +47,13 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime)
-    implementation(libs.firebase.components)
-
-    annotationProcessor(libs.lifecycle.compiler)
+    kapt(libs.lifecycle.compiler)
 
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.core.testing)
 
-    // Dagger / Hilt
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
-    kapt(libs.androidx.hilt.compiler)
-
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 }

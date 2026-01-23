@@ -46,10 +46,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
 
-    // Dagger / Hilt
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 }
