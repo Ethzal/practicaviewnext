@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -41,6 +40,7 @@ public class FacturaActivity extends AppCompatActivity {
     private FacturaAdapter adapter;
     ActivityFacturaBinding binding;
     FacturaViewModel facturaViewModel;
+    FacturaNavigator facturaNavigator;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -54,6 +54,9 @@ public class FacturaActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Navigator
+        facturaNavigator = new FacturaNavigator(getSupportFragmentManager());
 
         // Hacer visible el fragmento tras rotar
         FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT");
@@ -156,49 +159,32 @@ public class FacturaActivity extends AppCompatActivity {
         return true;
     }
 
+    /*******************
+     *   NAVIGATOR
+     *******************/
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_filters) {
-            FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentByTag("FILTRO_FRAGMENT");
-            if (filtroFragment == null) { // Crear filtro si no existe
-                filtroFragment = new FiltroFragment();
-
-                // Bundle para el importe mÃ¡ximo
-                float maxImporte = facturaViewModel.getMaxImporte();
-                Bundle bundle = new Bundle();
-                bundle.putFloat("MAX_IMPORTE", maxImporte);
-                filtroFragment.setArguments(bundle);
-
-                // Creación fragmento de filtros
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                transaction.replace(R.id.fragment_container, filtroFragment, "FILTRO_FRAGMENT");
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-
+            float maxImporte = facturaViewModel.getMaxImporte();
+            facturaNavigator.openFilter(maxImporte);
             binding.fragmentContainer.setVisibility(View.VISIBLE);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() { // Sobreescribir el metodo deprecated por incompatibilidades
+        if (!facturaNavigator.handleBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
     public void restoreMainView() { // Restaurar visibilidad de la actividad Factura
         binding.toolbar.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.VISIBLE);
         binding.fragmentContainer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onBackPressed() { // Sobreescribir el metodo deprecated por problemas
-        FiltroFragment filtroFragment = (FiltroFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
-        if (filtroFragment != null && filtroFragment.isVisible()) {
-            restoreMainView();
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     public void aplicarFiltros(Bundle bundle) {
