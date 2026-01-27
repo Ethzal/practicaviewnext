@@ -68,4 +68,7 @@
     <string name="datos_instalacion_fotovoltaica_en_tiempo_real">Aquí tienes los datos de tu instalación fotovoltaica en tiempo real.</string>
     <string name="estamos_trabajando">Estamos trabajando en mejorar la App. Tus paneles solares siguen produciendo, en breve podrás seguir viendo tu producción solar. Sentimos las molestias.</string>
 
+    <!-- Pop-Up -->
+    <string name="info">Información</string>
+    <string name="funcionalidad_no_disponible">Esta funcionalidad aún no está disponible</string>
 </resources>

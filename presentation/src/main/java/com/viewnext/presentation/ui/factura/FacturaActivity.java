@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -70,6 +71,13 @@ public class FacturaActivity extends AppCompatActivity {
         adapter = new FacturaAdapter(new ArrayList<>());
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
+
+        // Pop-Up
+        adapter.setOnFacturaClickListener(factura -> new AlertDialog.Builder(FacturaActivity.this)
+                .setTitle(R.string.info)
+                .setMessage(R.string.funcionalidad_no_disponible)
+                .setPositiveButton(R.string.cerrar, (dialog, which) -> dialog.dismiss())
+                .show());
 
         // Mostrar skeleton
         showShimmer();
