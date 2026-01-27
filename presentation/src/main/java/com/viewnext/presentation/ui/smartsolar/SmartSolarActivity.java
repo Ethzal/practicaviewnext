@@ -8,13 +8,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.viewnext.presentation.R;
 import com.viewnext.presentation.databinding.ActivitySmartSolarBinding;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.viewnext.presentation.adapter.ViewPagerAdapter;
+import com.viewnext.presentation.adapter.SmartSolarPagerAdapter;
+
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -30,7 +33,7 @@ public class SmartSolarActivity extends AppCompatActivity {
     private ActivitySmartSolarBinding binding;
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-    private ViewPagerAdapter adapter;
+    private SmartSolarPagerAdapter adapter;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -52,8 +55,17 @@ public class SmartSolarActivity extends AppCompatActivity {
         // Configuración del título
         binding.toolbarTitle.setText("Smart Solar");
 
+        // Creación de lista de fragmentos
+        List<Fragment> fragments = List.of(
+                new MiInstalacionFragment(),
+                new EnergiaFragment(),
+                new DetallesFragment()
+        );
+
         // Configurar ViewPager2 con el adaptador
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        SmartSolarPagerAdapter adapter =
+                new SmartSolarPagerAdapter(this, fragments);
+
         binding.viewPager.setAdapter(adapter);
 
         // Vincular TabLayout con ViewPager2

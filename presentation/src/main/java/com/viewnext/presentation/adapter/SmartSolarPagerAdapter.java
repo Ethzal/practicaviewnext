@@ -5,18 +5,22 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.viewnext.presentation.ui.smartsolar.DetallesFragment;
-import com.viewnext.presentation.ui.smartsolar.EnergiaFragment;
-import com.viewnext.presentation.ui.smartsolar.MiInstalacionFragment;
+import java.util.List;
 
 /**
  * Adapter para ViewPager2 que gestiona los fragmentos de SmartSolar.
  * Contiene tres pestañas: MiInstalacion, Energia y Detalles.
  */
-public class ViewPagerAdapter extends FragmentStateAdapter {
+public class SmartSolarPagerAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    private final List<Fragment> fragments;
+
+    public SmartSolarPagerAdapter(
+            @NonNull FragmentActivity fragmentActivity,
+            @NonNull List<Fragment> fragments
+    ) {
         super(fragmentActivity);
+        this.fragments = fragments;
     }
 
     /**
@@ -27,22 +31,15 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 1:
-                return new EnergiaFragment();
-            case 2:
-                return new DetallesFragment();
-            default:
-                return new MiInstalacionFragment();
-        }
+        return fragments.get(position);
     }
 
     /**
      * Número total de pestañas/fragments en el ViewPager.
-     * @return Siempre 3
+     * @return longitud del array de Fragments
      */
     @Override
     public int getItemCount() {
-        return 3; // Número de pestañas
+        return fragments.size(); // Número de pestañas
     }
 }
