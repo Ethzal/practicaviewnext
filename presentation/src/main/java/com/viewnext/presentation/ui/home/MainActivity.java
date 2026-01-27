@@ -4,29 +4,31 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.viewnext.presentation.databinding.ActivityMainBinding;
 import com.viewnext.presentation.ui.factura.FacturaActivity;
 import com.viewnext.presentation.ui.smartsolar.SmartSolarActivity;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 /**
  * Activity principal de la aplicación.
  * Funciones principales:
  * - Configuración edge-to-edge para que la UI ocupe toda la pantalla.
- * - Botón toggle para alternar entre Retromock y Retrofit (solo en modo debug).
+ * - Setup de visibilidad de controles debug.
  * - Navegación a FacturaActivity y SmartSolarActivity.
  */
-public class MainActivity extends AppCompatActivity { // Actividad principal, así empieza la app
-
+@AndroidEntryPoint
+public class MainActivity extends AppCompatActivity {
+    MainViewModel viewModel;
     private ActivityMainBinding binding;
-    private boolean usingRetromock = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,44 +38,46 @@ public class MainActivity extends AppCompatActivity { // Actividad principal, as
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> { // Ajustar vista en función de la barra de estado y navegación
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        setupWindowInsets();
+        setupToggleVisibility();
+        setupClickListeners();
+    }
+
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
 
-        boolean isDebuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-        // Botón para alternar entre Retrofit y Retromock si estamos en modo debug
-        if(isDebuggable){
-            usingRetromock=true;
+    private void setupToggleVisibility() {
+        boolean isDebug = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        if (isDebug) {
             binding.btToggleApi.setVisibility(View.VISIBLE);
-            binding.btToggleApi.setOnClickListener(v -> {
-                usingRetromock = !usingRetromock;
-                if (usingRetromock) {
-                    Toast.makeText(MainActivity.this, "Usando Retromock", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Usando Retrofit", Toast.LENGTH_SHORT).show();
-                }
-            });
         } else {
             binding.btToggleApi.setVisibility(View.GONE);
         }
+    }
 
-        // Botón para abrir FacturaActivity y pasar usingRetromock
+    private void setupClickListeners() {
+        binding.btToggleApi.setOnClickListener(v -> viewModel.toggleApi());
+
         binding.btFacturas.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, FacturaActivity.class);
-            intent.putExtra("USING_RETROMOCK", usingRetromock);
+            Intent intent = new Intent(this, FacturaActivity.class);
+            intent.putExtra("USING_RETROMOCK", viewModel.getUsingRetromock().getValue());
             startActivity(intent);
         });
-        // Botón para abrir SmartSolarActivity
-        binding.btSmart.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SmartSolarActivity.class);
-            startActivity(intent);
-        });
+
+        binding.btSmart.setOnClickListener(v ->
+                startActivity(new Intent(this, SmartSolarActivity.class))
+        );
     }
 
     @Override
-    protected void onDestroy() { // Cuando se destruye la actividad, ponemos el binding a null por la memoria
+    protected void onDestroy() {
         super.onDestroy();
         binding = null;
     }
