@@ -1,5 +1,7 @@
 package com.viewnext.presentation.viewmodel;
 
+import android.content.Intent;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -174,5 +176,33 @@ public class FacturaViewModel extends ViewModel {
                 (fechaFin.getValue() != null && !fechaFin.getValue().equals("día/mes/año")) ||
                 (valoresSlider.getValue() != null &&
                         (valoresSlider.getValue().get(0) > 0 || valoresSlider.getValue().get(1) < getMaxImporte()));
+    }
+
+    // ACTIVITY
+    public void init(boolean primeraVez, Intent intent) {
+        if (primeraVez) {
+            boolean usingRetromock = intent.getBooleanExtra("USING_RETROMOCK", false);
+            if (hayFiltrosActivos()) {
+                aplicarFiltrosPorDefecto();
+            } else {
+                loadFacturas(usingRetromock);
+            }
+        }
+    }
+
+    private void aplicarFiltrosPorDefecto() {
+        List<String> estados = getEstados().getValue() != null ? getEstados().getValue() : new ArrayList<>();
+        String fechaInicio = getFechaInicio().getValue() != null ? getFechaInicio().getValue() : "";
+        String fechaFin = getFechaFin().getValue() != null ? getFechaFin().getValue() : "";
+        List<Float> valoresSlider = getValoresSlider().getValue();
+
+        if (valoresSlider == null || valoresSlider.size() < 2) {
+            valoresSlider = new ArrayList<>();
+            valoresSlider.add(0.0f);
+            valoresSlider.add(getMaxImporte());
+        }
+
+        aplicarFiltros(estados, fechaInicio, fechaFin,
+                (double) valoresSlider.get(0), (double) valoresSlider.get(1));
     }
 }

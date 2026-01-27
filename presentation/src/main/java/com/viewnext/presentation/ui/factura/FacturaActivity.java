@@ -1,7 +1,6 @@
 package com.viewnext.presentation.ui.factura;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,34 +74,8 @@ public class FacturaActivity extends AppCompatActivity {
         // Mostrar skeleton
         showShimmer();
 
-        boolean primeraVez = savedInstanceState == null;
-
-        // Obtener el valor de "USING_RETROMOCK" desde el Intent
-        Intent intent = getIntent();
-        boolean usingRetromock = intent.getBooleanExtra("USING_RETROMOCK", false);  // Default es false (Retrofit)
-
-        // Cargar facturas
-        if(primeraVez){
-            if (facturaViewModel.hayFiltrosActivos()) {
-                List<String> estados = facturaViewModel.getEstados().getValue();
-                String fechaInicio = facturaViewModel.getFechaInicio().getValue();
-                String fechaFin = facturaViewModel.getFechaFin().getValue();
-                List<Float> valoresSlider = facturaViewModel.getValoresSlider().getValue();
-
-                if (estados == null) estados = new ArrayList<>();
-                if (fechaInicio == null) fechaInicio = "";
-                if (fechaFin == null) fechaFin = "";
-                if (valoresSlider == null || valoresSlider.size() < 2) {
-                    valoresSlider = new ArrayList<>();
-                    valoresSlider.add(0.0f);
-                    valoresSlider.add(facturaViewModel.getMaxImporte());
-                }
-
-                facturaViewModel.aplicarFiltros(estados, fechaInicio, fechaFin, (double) valoresSlider.get(0), (double) valoresSlider.get(1));
-            } else {
-                facturaViewModel.loadFacturas(usingRetromock);
-            }
-        }
+        // Primera vez
+        facturaViewModel.init(savedInstanceState == null, getIntent());
 
         facturaViewModel.getLoading().observe(this, isLoading -> {
             if (Boolean.TRUE.equals(isLoading)) {
