@@ -16,6 +16,10 @@ Se ha generado una versión `release` de la aplicación para que pueda ser insta
 
 ## ✨ Funcionalidades y Mejoras Clave
 
+![Clean Architecture](https://img.shields.io/badge/Clean%20Architecture-100%25-blue)
+![Room DB](https://img.shields.io/badge/Room%20Database-✅-green)
+![Hilt DI](https://img.shields.io/badge/Hilt%20DI-✅-orange)
+
 *   **Arquitectura limpia y modular:**
 Implementación estricta de Clean Architecture con capas domain, data y presentation.
 Repositorios e interfaces claramente separados para mejorar la mantenibilidad y testeo.
@@ -39,15 +43,23 @@ La base de este proyecto es una implementación estricta de **Clean Architecture
 
 Este enfoque garantiza un código **desacoplado, escalable, mantenible y altamente testeable.**
 
+## 📁 Estructura de Módulos
+
+EnergyApp/
+- **app/** — Presentation + DI (Hilt)
+- **data/** — Room + Retrofit + Retromock
+- **domain/** — Use Cases + Models + Interfaces (Pure Logic)
+- **presentation/** — Activities + Fragments + ViewModels
+
 ## 🧪 Testing y Calidad de Código
 
 Una de las prioridades de este proyecto fue asegurar la calidad y la robustez del código a través de **tests unitarios**.
 
 *   **Frameworks Utilizados:** Se utilizó **JUnit 4** para la estructura de los tests y **Mockito** para crear objetos mock y simular las dependencias (como los Casos de Uso).
-*   **Componentes Testeados:** El foco principal fue la capa de domain con los casos de uso y de presentación, específicamente los `ViewModel`, para validar la lógica de negocio y la correcta actualización del estado de la UI a través de `LiveData`.
+*   **Componentes Testeados:** La cobertura en Domain Layer (Use Cases) y de presentación, específicamente los `ViewModel`, para validar la lógica de negocio y la correcta actualización del estado de la UI a través de `LiveData`.
 *   **Técnicas Avanzadas:** Se utilizó `InstantTaskExecutorRule` para manejar los componentes de Arquitectura de Android fuera del hilo principal y se aplicó **reflexión** para la inyección de dependencias en un entorno de testing.
 
-El código de los tests se puede encontrar en el directorio `/app/src/test/`.
+El código de los tests se puede encontrar en el directorio `/domain/src/test/`.
 
 ## 🛠️ Stack Tecnológico y Librerías
 
@@ -55,9 +67,10 @@ El código de los tests se puede encontrar en el directorio `/app/src/test/`.
 |:-------------------------|:-------------------------------------------|
 | **Lenguaje**             | `Java`                                     |
 | **Arquitectura**         | `Clean Architecture`, `MVVM`               |
-| **Base de Datos**        | `Room Database`                   |
-| **Networking**           | `Retrofit 2`, `Gson`                       |
-| **Interfaz de Usuario**  | `XML`, `Material Design Components`        |
+| **Inyección Dependencias**| `Hilt`                                     |
+| **Base de Datos**        | `Room Database`                            |
+| **Networking**           | `Retrofit 2`, `Gson`, `Retromock`          |
+| **Interfaz de Usuario**  | `XML`, `Material Design`, `Shimmer`        |
 | **Control de Versiones** | `Git`, `GitHub Flow`                       |
 | **Testing**              | `JUnit 4`, `Mockito`, `AndroidX Test Core` |
 
