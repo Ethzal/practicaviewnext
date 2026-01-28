@@ -82,32 +82,45 @@ public class GetFacturasRepositoryImpl implements GetFacturasRepository {
      */
     @Override
     public void refreshFacturas(boolean usingRetromock, RepositoryCallback callback) {
+
+        ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
+        Call<FacturaResponse> call =
+                usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
+
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<FacturaResponse> call,
+                                   @NonNull Response<FacturaResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        List<FacturaEntity> entities =
+                                FacturaMapper.toEntityList(response.body().getFacturas());
+
+                        facturaDao.deleteAll();
+                        facturaDao.insertAll(entities);
+
+                        callback.onSuccess(FacturaMapper.toDomainList(entities));
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
+                loadFromRoom(callback);
+            }
+        });
+    }
+
+    /**
+     * Obtiene la lista de facturas directamente desde Room y la devuelve al callback proporcionado.
+     * @param callback recibirá la lista de facturas en (List<Factura>) una vez obtenidas de la BBDD.
+     */
+    private void loadFromRoom(RepositoryCallback callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            ApiService apiService = usingRetromock ? apiServiceMock : apiServiceRetrofit;
-            Call<FacturaResponse> call = usingRetromock ? apiService.getFacturasMock() : apiService.getFacturas();
-
-            call.enqueue(new Callback<>() {
-                @Override
-                public void onResponse(@NonNull Call<FacturaResponse> call, @NonNull Response<FacturaResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        List<FacturaEntity> entities = FacturaMapper.toEntityList(response.body().getFacturas());
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            facturaDao.deleteAll();
-                            facturaDao.insertAll(entities);
-
-                            // Devuelve la lista de dominio al UseCase
-                            callback.onSuccess(FacturaMapper.toDomainList(entities));
-                        });
-                    } else {
-                        callback.onError("Error en la respuesta de la API");
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<FacturaResponse> call, @NonNull Throwable t) {
-                    callback.onError(t.getMessage() != null ? t.getMessage() : "Error desconocido");
-                }
-            });
+            List<FacturaEntity> entities = facturaDao.getFacturasDirect();
+            callback.onSuccess(FacturaMapper.toDomainList(entities));
         });
     }
 
