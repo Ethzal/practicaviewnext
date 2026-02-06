@@ -1,27 +1,21 @@
-package com.viewnext.data.repository;
+package com.viewnext.data.repository
 
-import android.content.Context;
-import android.util.Log;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import com.viewnext.data.api.ApiService;
-import com.viewnext.data.api.RetromockClient;
-import com.viewnext.domain.model.Detalles;
-import com.viewnext.domain.model.DetallesResponse;
-import com.viewnext.domain.repository.DetallesCallback;
-import com.viewnext.domain.repository.GetDetallesRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import dagger.hilt.android.qualifiers.ApplicationContext;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import android.content.Context
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.viewnext.data.api.ApiService
+import com.viewnext.data.api.RetromockClient
+import com.viewnext.domain.model.Detalles
+import com.viewnext.domain.model.DetallesResponse
+import com.viewnext.domain.repository.DetallesCallback
+import com.viewnext.domain.repository.GetDetallesRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementación del repositorio GetDetallesRepository. Esta clase se encarga de obtener los detalles
@@ -29,29 +23,24 @@ import retrofit2.Response;
  * También proporciona un métodos para obtener los detalles como un LiveData.
  */
 @Singleton
-public class GetDetallesRepositoryImpl implements GetDetallesRepository {
+class GetDetallesRepositoryImpl @Inject constructor(
+    @param:ApplicationContext private val context: Context
+) : GetDetallesRepository {
 
-    private final ApiService apiServiceMock;
-    private final List<Detalles> detallesCache;
-    private final MutableLiveData<List<Detalles>> detallesLiveData = new MutableLiveData<>();
+    private val apiServiceMock: ApiService =
+        RetromockClient.getRetromockInstance(context).create(ApiService::class.java)
 
-    /**
-     * Constructor que inicializa la instancia de la API (Retromock) y la caché de detalles.
-     * @param context El contexto de la aplicación necesario para inicializar Retromock.
-     */
-    @Inject
-    public GetDetallesRepositoryImpl(@ApplicationContext Context context) {
-        this.apiServiceMock = RetromockClient.getRetromockInstance(context).create(ApiService.class);
-        this.detallesCache = new ArrayList<>();
-    }
+    private val detallesCache = mutableListOf<Detalles>()
 
     /**
-     * Obtiene la lista de detalles almacenada en caché.
-     * @return Una lista de objetos Detalles que se encuentran en la caché.
+     * Obtiene el LiveData que contiene la lista de detalles. El LiveData permite observar
+     * los cambios en los detalles en tiempo real.
+     * @return Un LiveData que contiene la lista de detalles.
      */
-    @Override
-    public List<Detalles> getDetalles() {
-        return new ArrayList<>(detallesCache);
+    private val detallesLiveData = MutableLiveData<List<Detalles>>()
+
+    override fun getDetalles(): List<Detalles> {
+        return detallesCache.toList()
     }
 
     /**
@@ -60,39 +49,38 @@ public class GetDetallesRepositoryImpl implements GetDetallesRepository {
      * En caso de error, se pasa el error al callback.
      * @param callback El callback que maneja el éxito o el error al obtener los detalles.
      */
-    @Override
-    public void refreshDetalles(DetallesCallback<List<Detalles>> callback) {
-        // Aquí es donde se hace la llamada real
-        apiServiceMock.getDetallesMock().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<DetallesResponse> call, Response<DetallesResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    detallesCache.clear();
-                    detallesCache.addAll(response.body().getDetalles());
+    override fun refreshDetalles(callback: DetallesCallback<List<Detalles>>) {
+        apiServiceMock.detallesMock?.enqueue(object : Callback<DetallesResponse?> {
 
-                    // Al llamar a onSuccess con el resultado
-                    callback.onSuccess(new ArrayList<>(detallesCache));
-                    Log.d("Repository", "Detalles cargados desde assets: " + detallesCache.size());
+            override fun onResponse(
+                call: Call<DetallesResponse?>,
+                response: Response<DetallesResponse?>
+            ) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    // Actualiza caché
+                    detallesCache.clear()
+                    detallesCache.addAll(body.detalles)
+
+                    // Actualiza LiveData
+                    detallesLiveData.value = detallesCache.toList()
+
+                    // Notifica callback
+                    callback.onSuccess(detallesCache.toList())
+
+                    Log.d("Repository", "Detalles cargados: ${detallesCache.size}")
                 } else {
-                    // Si hay error en la respuesta, llamamos a onFailure
-                    callback.onFailure(new Exception("Error al cargar detalles"));
+                    // Manejo de error si la respuesta no es exitosa
+                    callback.onFailure(Exception("Error al cargar detalles"))
                 }
             }
 
-            @Override
-            public void onFailure(Call<DetallesResponse> call, Throwable t) {
-                // En caso de fallo de la llamada, se llama a onFailure con el error
-                callback.onFailure(t);
+            override fun onFailure(call: Call<DetallesResponse?>, t: Throwable) {
+                // Manejo de error en fallo de red
+                callback.onFailure(t)
             }
-        });
+        })
     }
 
-    /**
-     * Obtiene el LiveData que contiene la lista de detalles. El LiveData permite observar
-     * los cambios en los detalles en tiempo real.
-     * @return Un LiveData que contiene la lista de detalles.
-     */
-    public LiveData<List<Detalles>> getDetallesLiveData() {
-        return detallesLiveData;
-    }
+    fun getDetallesLiveData(): LiveData<List<Detalles>> = detallesLiveData
 }

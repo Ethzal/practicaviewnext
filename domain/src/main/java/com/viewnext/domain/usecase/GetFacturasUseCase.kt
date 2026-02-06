@@ -27,13 +27,14 @@ class GetFacturasUseCase
      */
     fun execute(usingRetromock: Boolean, callback: Callback) {
         repository.refreshFacturas(usingRetromock, object : RepositoryCallback {
-            override fun onSuccess(facturas: MutableList<Factura?>?) {
-                callback.onSuccess(facturas)
+            override fun onSuccess(facturas: List<Factura>) {
+                callback.onSuccess(facturas.toMutableList())
             }
 
-            override fun onError(error: String?) {
-                callback.onError(error)
+            override fun onError(error: Throwable) {
+                callback.onError(error.message)
             }
         })
     }
+
 }

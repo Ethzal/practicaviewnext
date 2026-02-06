@@ -5,6 +5,6 @@ package com.viewnext.domain.repository
  * @param <T> Tipo de resultado esperado en caso de éxito.
 </T> */
 interface DetallesCallback<T> {
-    fun onSuccess(result: T?)
-    fun onFailure(error: Throwable?)
+    fun onSuccess(result: T)
+    fun onFailure(error: Throwable)
 }

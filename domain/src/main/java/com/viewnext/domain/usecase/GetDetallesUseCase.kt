@@ -17,13 +17,13 @@ class GetDetallesUseCase
      * Ejecuta la actualización de los detalles.
      * @param callback Callback que será notificado con los resultados
      */
-    fun refreshDetalles(callback: DetallesCallback<MutableList<Detalles?>?>) {
-        repository.refreshDetalles(object : DetallesCallback<MutableList<Detalles?>?> {
-            override fun onSuccess(result: MutableList<Detalles?>?) {
+    fun refreshDetalles(callback: DetallesCallback<List<Detalles>>) {
+        repository.refreshDetalles(object : DetallesCallback<List<Detalles>> {
+            override fun onSuccess(result: List<Detalles>) {
                 callback.onSuccess(result)
             }
 
-            override fun onFailure(error: Throwable?) {
+            override fun onFailure(error: Throwable) {
                 callback.onFailure(error)
             }
         })
