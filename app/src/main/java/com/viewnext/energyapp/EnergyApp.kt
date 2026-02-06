@@ -1,7 +1,7 @@
-package com.viewnext.energyapp;
+package com.viewnext.energyapp
 
-import android.app.Application;
-import dagger.hilt.android.HiltAndroidApp;
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
 /**
  * Clase principal de la aplicación para inicializar el framework de inyección de dependencias Hilt.
@@ -9,5 +9,4 @@ import dagger.hilt.android.HiltAndroidApp;
  * lo que hace que la aplicación esté lista para la inyección de dependencias a lo largo del ciclo de vida de la app.
  */
 @HiltAndroidApp
-public class EnergyApp extends Application {
-}
+class EnergyApp : Application()
