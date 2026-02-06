@@ -1,50 +1,43 @@
-package com.viewnext.domain.usecase;
+package com.viewnext.domain.usecase
 
-import com.viewnext.domain.model.Detalles;
-import com.viewnext.domain.repository.DetallesCallback;
-import com.viewnext.domain.repository.GetDetallesRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import com.viewnext.domain.model.Detalles
+import com.viewnext.domain.repository.DetallesCallback
+import com.viewnext.domain.repository.GetDetallesRepository
+import org.junit.Before
+import org.junit.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.MockitoAnnotations
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.util.List;
-
-public class GetDetallesUseCaseTest {
-
+class GetDetallesUseCaseTest {
     @Mock
-    private GetDetallesRepository mockRepository;
-
-    private GetDetallesUseCase useCase;
+    private lateinit var mockRepository: GetDetallesRepository
+    private lateinit var useCase: GetDetallesUseCase
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        useCase = new GetDetallesUseCase(mockRepository);
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+        useCase = GetDetallesUseCase(mockRepository)
     }
 
     @Test
-    public void refreshDetalles_callsRepositoryRefresh() {
+    fun refreshDetalles_callsRepositoryRefresh() {
         // Arrange
         // @Before
 
         // Act
-        useCase.refreshDetalles(new DetallesCallback<>() {
-            @Override
-            public void onSuccess(List<Detalles> detalles) {
+        useCase.refreshDetalles(object : DetallesCallback<MutableList<Detalles?>?> {
+            override fun onSuccess(result: MutableList<Detalles?>?) {
             }
 
-            @Override
-            public void onFailure(Throwable t) {
+            override fun onFailure(error: Throwable?) {
             }
-        });
+        })
 
         // Assert
-        verify(mockRepository).refreshDetalles(any(DetallesCallback.class));
-        verifyNoMoreInteractions(mockRepository);
+        verify(mockRepository).refreshDetalles(any())
+        verifyNoMoreInteractions(mockRepository)
     }
 }

@@ -1,7 +1,7 @@
-package com.viewnext.data.local.entity;
+package com.viewnext.data.local.entity
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
  * Representa una factura almacenada en la base de datos local.
@@ -9,10 +9,14 @@ import androidx.room.PrimaryKey;
  * @see FacturaEntity
  */
 @Entity(tableName = "facturas")
-public class FacturaEntity {
+class FacturaEntity {
+    @JvmField
     @PrimaryKey(autoGenerate = true)
-    public int id;
-    public String estado;
-    public String fecha;
-    public double importe;
+    var id: Int = 0
+    @JvmField
+    var estado: String? = null
+    @JvmField
+    var fecha: String? = null
+    @JvmField
+    var importe: Double = 0.0
 }

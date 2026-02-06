@@ -1,24 +1,22 @@
-package com.viewnext.domain.repository;
+package com.viewnext.domain.repository
 
-import com.viewnext.domain.model.Factura;
-import java.util.List;
+import com.viewnext.domain.model.Factura
 
 /**
  * Repositorio para obtener facturas desde la fuente de datos (base de datos o remoto).
  * Define los métodos necesarios para recuperar y refrescar las facturas.
  */
-public interface GetFacturasRepository {
-
+interface GetFacturasRepository {
     /**
      * Obtiene todas las facturas almacenadas en la base de datos local.
      * @return Lista de facturas almacenadas
      */
-    List<Factura> getFacturasFromDb();
+    val facturasFromDb: MutableList<Factura?>?
 
     // Callback utilizado para notificar el resultado de la operación de refresco de facturas
     interface RepositoryCallback {
-        void onSuccess(List<Factura> facturas);
-        void onError(String error);
+        fun onSuccess(facturas: MutableList<Factura?>?)
+        fun onError(error: String?)
     }
 
     /**
@@ -26,5 +24,5 @@ public interface GetFacturasRepository {
      * @param usingRetromock Si es true, se usa un mock (RetroMock); si es false, se usa la fuente real (Retrofit)
      * @param repositoryCallback Callback para notificar éxito o error
      */
-    void refreshFacturas(boolean usingRetromock, RepositoryCallback repositoryCallback);
+    fun refreshFacturas(usingRetromock: Boolean, repositoryCallback: RepositoryCallback?)
 }

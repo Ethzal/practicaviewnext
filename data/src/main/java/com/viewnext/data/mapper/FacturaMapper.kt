@@ -1,69 +1,58 @@
-package com.viewnext.data.mapper;
+package com.viewnext.data.mapper
 
-import com.viewnext.data.local.entity.FacturaEntity;
-import com.viewnext.domain.model.Factura;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.viewnext.data.local.entity.FacturaEntity
+import com.viewnext.domain.model.Factura
 
 /**
- * Clase Mapper que se encarga de transformar los objetos entre el modelo de dominio {@link Factura} y
- * la entidad de la base de datos {@link FacturaEntity}. Los métodos de esta clase permiten convertir
+ * Clase Mapper que se encarga de transformar los objetos entre el modelo de dominio [Factura] y
+ * la entidad de la base de datos [FacturaEntity]. Los métodos de esta clase permiten convertir
  * entre estas representaciones, tanto a nivel individual como en listas completas.
  */
-public class FacturaMapper {
+object FacturaMapper {
     /**
-     * Convierte un objeto {@link Factura} en su correspondiente entidad {@link FacturaEntity}.
-     * @param factura El objeto de dominio {@link Factura} a convertir.
-     * @return La entidad {@link FacturaEntity} que representa la factura en la base de datos.
+     * Convierte un objeto [Factura] en su correspondiente entidad [FacturaEntity].
+     * @param factura El objeto de dominio [Factura] a convertir.
+     * @return La entidad [FacturaEntity] que representa la factura en la base de datos.
      */
-    public static FacturaEntity toEntity(Factura factura) {
-        FacturaEntity entity = new FacturaEntity();
-        entity.estado = factura.getDescEstado();
-        entity.fecha = factura.getFecha();
-        entity.importe = factura.getImporteOrdenacion();
-        entity.id = (factura.getDescEstado() + factura.getFecha() + factura.getImporteOrdenacion())
-                .hashCode();
-        return entity;
-    }
-
-    /**
-     * Convierte una lista de objetos {@link Factura} en una lista de entidades {@link FacturaEntity}.
-     * @param facturas La lista de objetos {@link Factura} a convertir.
-     * @return La lista de entidades {@link FacturaEntity} correspondientes.
-     */
-    public static List<FacturaEntity> toEntityList(List<Factura> facturas) {
-        List<FacturaEntity> entities = new ArrayList<>();
-        for (Factura factura : facturas) {
-            entities.add(toEntity(factura));
+    fun toEntity(factura: Factura): FacturaEntity =
+        FacturaEntity().apply {
+            estado = factura.descEstado
+            fecha = factura.fecha
+            importe = factura.importeOrdenacion
+            id = listOf(
+                factura.descEstado,
+                factura.fecha,
+                factura.importeOrdenacion
+            ).joinToString("|").hashCode()
         }
-        return entities;
-    }
 
     /**
-     * Convierte una entidad {@link FacturaEntity} a su correspondiente objeto de dominio {@link Factura}.
-     * @param entity La entidad {@link FacturaEntity} a convertir.
-     * @return El objeto de dominio {@link Factura} correspondiente.
+     * Convierte una lista de objetos [Factura] en una lista de entidades [FacturaEntity].
+     * @param facturas La lista de objetos [Factura] a convertir.
+     * @return La lista de entidades [FacturaEntity] correspondientes.
      */
-    public static Factura toDomain(FacturaEntity entity) {
-        Factura factura = new Factura();
-        factura.setDescEstado(entity.estado);
-        factura.setFecha(entity.fecha);
-        factura.setImporteOrdenacion(entity.importe);
-        return factura;
-    }
+    @JvmStatic
+    fun toEntityList(facturas: List<Factura>): List<FacturaEntity> =
+        facturas.map { toEntity(it) }
 
     /**
-     * Convierte una lista de entidades {@link FacturaEntity} en una lista de objetos de dominio {@link Factura}.
-     * @param entities La lista de entidades {@link FacturaEntity} a convertir.
-     * @return La lista de objetos de dominio {@link Factura} correspondientes.
+     * Convierte una entidad [FacturaEntity] a su correspondiente objeto de dominio [Factura].
+     * @param entity La entidad [FacturaEntity] a convertir.
+     * @return El objeto de dominio [Factura] correspondiente.
      */
-    public static List<Factura> toDomainList(List<FacturaEntity> entities) {
-        List<Factura> facturas = new ArrayList<>();
-        for (FacturaEntity entity : entities) {
-            facturas.add(toDomain(entity));
-        }
-        return facturas;
-    }
+    fun toDomain(entity: FacturaEntity): Factura =
+        Factura(
+            descEstado = entity.estado,
+            fecha = entity.fecha,
+            importeOrdenacion = entity.importe
+        )
 
+    /**
+     * Convierte una lista de entidades [FacturaEntity] en una lista de objetos de dominio [Factura].
+     * @param entities La lista de entidades [FacturaEntity] a convertir.
+     * @return La lista de objetos de dominio [Factura] correspondientes.
+     */
+    @JvmStatic
+    fun toDomainList(entities: List<FacturaEntity>): List<Factura> =
+        entities.map { toDomain(it) }
 }

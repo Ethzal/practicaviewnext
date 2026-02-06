@@ -1,30 +1,23 @@
-package com.viewnext.domain.usecase;
+package com.viewnext.domain.usecase
 
-import com.viewnext.domain.model.Factura;
-import com.viewnext.domain.repository.GetFacturasRepository;
-import java.util.List;
+import com.viewnext.domain.model.Factura
+import com.viewnext.domain.repository.GetFacturasRepository
+import com.viewnext.domain.repository.GetFacturasRepository.RepositoryCallback
 
 /**
  * Caso de uso para obtener la lista de facturas desde el repositorio.
  * Encapsula la lógica de negocio para la recuperación de facturas,
  * permitiendo diferenciar entre fuentes de datos (Retrofit o Retromock).
  */
-public class GetFacturasUseCase {
-
-    private final GetFacturasRepository repository;
-
-    /**
-     * Constructor del caso de uso.
-     * @param repository Repositorio que maneja la obtención de facturas
-     */
-    public GetFacturasUseCase(GetFacturasRepository repository) {
-        this.repository = repository;
-    }
-
+class GetFacturasUseCase
+/**
+ * Constructor del caso de uso.
+ * @param repository Repositorio que maneja la obtención de facturas
+ */(private val repository: GetFacturasRepository) {
     // Callback para notificar el resultado de la ejecución del caso de uso
-    public interface Callback {
-        void onSuccess(List<Factura> facturas);
-        void onError(String error);
+    interface Callback {
+        fun onSuccess(facturas: MutableList<Factura?>?)
+        fun onError(error: String?)
     }
 
     /**
@@ -32,17 +25,15 @@ public class GetFacturasUseCase {
      * @param usingRetromock Si es true, usa datos simulados; si es false, usa la API real
      * @param callback Callback que será notificado con los resultados
      */
-    public void execute(boolean usingRetromock, Callback callback) {
-        repository.refreshFacturas(usingRetromock, new GetFacturasRepository.RepositoryCallback() {
-            @Override
-            public void onSuccess(List<Factura> facturas) {
-                callback.onSuccess(facturas);
+    fun execute(usingRetromock: Boolean, callback: Callback) {
+        repository.refreshFacturas(usingRetromock, object : RepositoryCallback {
+            override fun onSuccess(facturas: MutableList<Factura?>?) {
+                callback.onSuccess(facturas)
             }
 
-            @Override
-            public void onError(String error) {
-                callback.onError(error);
+            override fun onError(error: String?) {
+                callback.onError(error)
             }
-        });
+        })
     }
 }

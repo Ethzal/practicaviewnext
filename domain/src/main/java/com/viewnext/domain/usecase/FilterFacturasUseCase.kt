@@ -1,22 +1,13 @@
-package com.viewnext.domain.usecase;
+package com.viewnext.domain.usecase
 
-import com.viewnext.domain.model.Factura;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import com.viewnext.domain.model.Factura
+import com.viewnext.domain.model.Factura.Companion.stringToDate
 
 /**
  * Caso de uso que filtra una lista de facturas según criterios de estado, fecha e importe.
  * Encapsula la lógica de filtrado utilizada en la presentación de facturas.
  */
-public class FilterFacturasUseCase {
-
-    public FilterFacturasUseCase() {
-        // Constructor vacío
-    }
-
+class FilterFacturasUseCase {
     /**
      * Filtra las facturas según los criterios proporcionados.
      * @param facturas           Lista completa de facturas a filtrar
@@ -27,55 +18,60 @@ public class FilterFacturasUseCase {
      * @param importeMax         Importe máximo a incluir; puede ser nulo
      * @return Lista de facturas que cumplen con todos los filtros
      */
-    public List<Factura> filtrarFacturas(
-            List<Factura> facturas,
-            List<String> estadosSeleccionados,
-            String fechaInicioString,
-            String fechaFinString,
-            Double importeMin,
-            Double importeMax
-    ) {
-
+    fun filtrarFacturas(
+        facturas: MutableList<Factura>,
+        estadosSeleccionados: MutableList<String?>?,
+        fechaInicioString: String?,
+        fechaFinString: String?,
+        importeMin: Double?,
+        importeMax: Double?
+    ): MutableList<Factura?> {
         // Convertir las fechas de String a Date
-        Date fechaInicio = Factura.stringToDate(fechaInicioString);
-        Date fechaFin = Factura.stringToDate(fechaFinString);
+
+        val fechaInicio = stringToDate(fechaInicioString)
+        val fechaFin = stringToDate(fechaFinString)
 
         // Crear una lista para las facturas filtradas
-        List<Factura> facturasFiltradas = new ArrayList<>();
+        val facturasFiltradas: MutableList<Factura?> = ArrayList()
 
         // Iterar sobre todas las facturas y aplicar los filtros
-        for (Factura factura : facturas) {
-            boolean cumpleEstado = (estadosSeleccionados == null || estadosSeleccionados.isEmpty() || estadosSeleccionados.contains(factura.getDescEstado()));
-            boolean cumpleFecha = true;
+        for (factura in facturas) {
+            val cumpleEstado =
+                (estadosSeleccionados == null || estadosSeleccionados.isEmpty() || estadosSeleccionados.contains(
+                    factura.descEstado
+                ))
+            var cumpleFecha = true
 
-            if (fechaInicioString != null && !fechaInicioString.isEmpty() && factura.getFecha() != null) {
-                if (fechaInicio != null) {
-                    cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaInicio) >= 0;
+            // Fecha INICIO
+            if (fechaInicio != null && !factura.fecha.isNullOrEmpty()) {
+                stringToDate(factura.fecha)?.let { fechaFactura ->
+                    cumpleFecha = cumpleFecha && fechaFactura >= fechaInicio
                 }
             }
 
-            if (fechaFinString != null && !fechaFinString.isEmpty() && factura.getFecha() != null) {
-                if (fechaFin != null) {
-                    cumpleFecha &= Objects.requireNonNull(Factura.stringToDate(factura.getFecha())).compareTo(fechaFin) <= 0;
+            // Fecha FIN
+            if (fechaFin != null && !factura.fecha.isNullOrEmpty()) {
+                stringToDate(factura.fecha)?.let { fechaFactura ->
+                    cumpleFecha = cumpleFecha && fechaFactura <= fechaFin
                 }
             }
 
-            boolean cumpleImporte = true;
+            var cumpleImporte = true
 
             if (importeMin != null) {
-                cumpleImporte &= factura.getImporteOrdenacion() >= importeMin;
+                cumpleImporte = cumpleImporte and (factura.importeOrdenacion >= importeMin)
             }
 
             if (importeMax != null) {
-                cumpleImporte &= factura.getImporteOrdenacion() <= importeMax;
+                cumpleImporte = cumpleImporte and (factura.importeOrdenacion <= importeMax)
             }
 
             // Si la factura cumple con todos los filtros, agregarla a la lista filtrada
             if (cumpleEstado && cumpleFecha && cumpleImporte) {
-                facturasFiltradas.add(factura);
+                facturasFiltradas.add(factura)
             }
         }
 
-        return facturasFiltradas;
+        return facturasFiltradas
     }
 }
